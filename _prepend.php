@@ -3,8 +3,7 @@
 #
 # This file is part of postExpired, a plugin for Dotclear 2.
 # 
-# Copyright (c) 2009-2013 Jean-Christian Denis and contributors
-# contact@jcdenis.fr http://jcd.lv
+# Copyright (c) 2009-2021 Jean-Christian Denis and contributors
 # 
 # Licensed under the GPL version 2.0 license.
 # A copy of this license is available in LICENSE file or at
@@ -13,8 +12,7 @@
 # -- END LICENSE BLOCK ------------------------------------
 
 if (!defined('DC_RC_PATH')) {
-
-	return null;
+    return null;
 }
 
 /**
@@ -28,12 +26,12 @@ if (!defined('DC_RC_PATH')) {
  */
 function encodePostExpired($in)
 {
-	$out = array();
-	foreach($in as $k => $v) {
-		$out[] = $k.'|'.$v;
-	}
+    $out = array();
+    foreach($in as $k => $v) {
+        $out[] = $k . '|' . $v;
+    }
 
-	return implode(';', $out);
+    return implode(';', $out);
 }
 
 /**
@@ -44,11 +42,11 @@ function encodePostExpired($in)
  */
 function decodePostExpired($in)
 {
-	$out = array();
-	foreach(explode(';', $in) as $v) {
-		$v = explode('|', $v);
-		$out[$v[0]] = $v[1];
-	}
+    $out = array();
+    foreach(explode(';', $in) as $v) {
+        $v = explode('|', $v);
+        $out[$v[0]] = $v[1];
+    }
 
-	return $out;
+    return $out;
 }

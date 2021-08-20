@@ -3,8 +3,7 @@
 #
 # This file is part of postExpired, a plugin for Dotclear 2.
 # 
-# Copyright (c) 2009-2013 Jean-Christian Denis and contributors
-# contact@jcdenis.fr http://jcd.lv
+# Copyright (c) 2009-2021 Jean-Christian Denis and contributors
 # 
 # Licensed under the GPL version 2.0 license.
 # A copy of this license is available in LICENSE file or at
@@ -13,49 +12,41 @@
 # -- END LICENSE BLOCK ------------------------------------
 
 if (!defined('DC_CONTEXT_ADMIN')) {
-
-	return null;
+    return null;
 }
 
 # -- Module specs --
-
-$dc_min = '2.6';
+$dc_min = '2.18';
 $mod_id = 'postExpired';
 
 # -- Nothing to change below --
-
 try {
+    # Check module version
+    if (version_compare(
+        $core->getVersion($mod_id),
+        $core->plugins->moduleInfo($mod_id, 'version'),
+        '>='
+    )) {
+        return null;
+    }
 
-	# Check module version
-	if (version_compare(
-		$core->getVersion($mod_id),
-		$core->plugins->moduleInfo($mod_id, 'version'),
-		'>='
-	)) {
+    # Check Dotclear version
+    if (!method_exists('dcUtils', 'versionsCompare') 
+     || dcUtils::versionsCompare(DC_VERSION, $dc_min, '<', false)) {
+        throw new Exception(sprintf(
+            '%s requires Dotclear %s', $mod_id, $dc_min
+        ));
+    }
 
-		return null;
-	}
+    # Set module version
+    $core->setVersion(
+        $mod_id,
+        $core->plugins->moduleInfo($mod_id, 'version')
+    );
 
-	# Check Dotclear version
-	if (!method_exists('dcUtils', 'versionsCompare') 
-	 || dcUtils::versionsCompare(DC_VERSION, $dc_min, '<', false)) {
-		throw new Exception(sprintf(
-			'%s requires Dotclear %s', $mod_id, $dc_min
-		));
-	}
+    return true;
+} catch (Exception $e) {
+    $core->error->add($e->getMessage());
 
-	# Set module version
-	$core->setVersion(
-		$mod_id,
-		$core->plugins->moduleInfo($mod_id, 'version')
-	);
-
-	return true;
+    return false;
 }
-catch (Exception $e) {
-	$core->error->add($e->getMessage());
-
-	return false;
-}
-
-?>

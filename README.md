@@ -30,3 +30,9 @@ Notes:
 
   * Only one expired date per post is supported
   * Expired dates are checked from public home page and feed page
+
+## MORE
+
+ * License : GNU GPL v2
+ * Source & contribution : [GitHub Page](https://github.com/JcDenis/postExpired)
+ * Packages & details:  [Dotaddict Page](https://plugins.dotaddict.org/dc2/details/postExpired)
