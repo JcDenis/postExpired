@@ -332,12 +332,11 @@ class adminBehaviorPostExpired
 
         if ($post_id) {
 
-            $rs = $core->meta->getMeta(
-                'post_expired',
-                1,
-                null,
-                $post_id
-            );
+            $rs = $core->meta->getMetadata([
+                'meta_type' => 'post_expired',
+                'post_id' => $post_id,
+                'limit' => 1
+            ]);
 
             if (!$rs->isEmpty()) {
                 $post_expired = decodePostExpired($rs->meta_id);

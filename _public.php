@@ -182,17 +182,17 @@ class rsExtPostExpiredPublic extends rsExtPost
     public static function postExpiredDate(record $rs)
     {
         if (!$rs->postexpired[$rs->post_id]) { //memory
-            $rs_date = $rs->core->meta->getMetadata(array(
+            $rs_date = $rs->core->meta->getMetadata([
                 'meta_type' => 'post_expired',
                 'post_id'=> $rs->post_id,
                 'limit'=> 1
-            ));
+            ]);
 
             if ($rs_date->isEmpty()) {
                 return null;
             }
 
-            $v = unserialize(base64_decode($rs_date->meta_id));
+            $v = decodePostExpired($rs_date->meta_id);
             $rs->postexpired[$rs->post_id] = $v['date'];
         }
 
