@@ -58,5 +58,3 @@ $GLOBALS['__l10n']['Expired on'] = 'Expire le';
 
 #_public.php:26
 $GLOBALS['__l10n']['This entry has no expiration date'] = 'Ce billet n\'a pas de date de péremption';
-
-?>
