@@ -215,7 +215,7 @@ class adminBehaviorPostExpired
                     $pa->getCallerTitle() => $pa->getRedirection(true),
                     __('Add expired date to this selection') => '' 
                 )),
-                dcPage::jsDatePicker() .
+                //dcPage::jsDatePicker() .
                 self::adminPostHeaders()
             );
 
@@ -346,13 +346,11 @@ class adminBehaviorPostExpired
         $fields['post_expired_date'] =
             '<p><label for="post_expired_date">' .
             __('Date:') . '</label>' .
-            form::field(
-                'post_expired_date',
-                16,
-                16,
-                empty($post_expired['date']) ? 
-                    '' : $post_expired['date']
-            ) . '</p>';
+            form::datetime('post_expired_date', [
+                'default' => html::escapeHTML(dt::str('%Y-%m-%dT%H:%M', strtotime($post_expired['date'] ?? 0))),
+                'class'   => (empty($post_expired['date']) ? 'invalid' : ''),
+            ])
+             . '</p>';
 
         $fields['post_expired_status'] =
             '<h5>' . __('On this date, change:') . '</h5>' .

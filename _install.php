@@ -16,7 +16,7 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 }
 
 # -- Module specs --
-$dc_min = '2.18';
+$dc_min = '2.21';
 $mod_id = 'postExpired';
 
 # -- Nothing to change below --

@@ -1,6 +1,9 @@
-2021.08.20.1 - dev
- - [ ] fix wrong timezone on admin vs public expired date
- - [x] clean up again...
+2022.04.27.1 - dev
+- [ ] fix wrong timezone on admin vs public expired date
+
+2022.04.27
+- require Dotclear 2.21.3
+- fix browser date picker
 
 2021.08.20
 - fix metadata call

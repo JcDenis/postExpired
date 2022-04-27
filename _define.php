@@ -19,9 +19,9 @@ $this->registerModule(
     'Expired entries',
     'Change entries options at a given date', 
     'Jean-Christian Denis and Contributors',
-    '2021.09.10',
+    '2022.04.27',
     [
-        'requires' => [['core', '2.19']],
+        'requires' => [['core', '2.21']],
         'permissions'   => 'usage,contentadmin',
         'type'          => 'plugin',
         'support'       => 'https://github.com/JcDenis/postExpired',
