@@ -16,61 +16,64 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 }
 
 # Check plugin version
-if ($core->getVersion('postExpired') != $core->plugins->moduleInfo('postExpired', 'version')) {
+if (dcCore::app()->getVersion('postExpired') != dcCore::app()->plugins->moduleInfo('postExpired', 'version')) {
     return null;
 }
 
 # Check user right
-if (!$core->auth->check('contentadmin', $core->blog->id)) {
+if (!dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([
+        dcAuth::PERMISSION_CONTENT_ADMIN,
+    ]), dcCore::app()->blog->id)
+) {
     return null;
 }
 
 # Admin behaviors
-$core->addBehavior(
-    'adminPostsActionsPage',
-    ['adminBehaviorPostExpired', 'adminPostsActionsPage']
+dcCore::app()->addBehavior(
+    'adminPostsActions',
+    ['adminBehaviorPostExpired', 'adminPostsActions']
 );
-$core->addBehavior(
-    'adminPagesActionsPage',
-    ['adminBehaviorPostExpired', 'adminPostsActionsPage']
+dcCore::app()->addBehavior(
+    'adminPagesActions',
+    ['adminBehaviorPostExpired', 'adminPostsActions']
 );
-$core->addBehavior(
+dcCore::app()->addBehavior(
     'adminPostHeaders',
     ['adminBehaviorPostExpired', 'adminPostHeaders']
 );
-$core->addBehavior(
+dcCore::app()->addBehavior(
     'adminPageHeaders',
     ['adminBehaviorPostExpired', 'adminPostHeaders']
 );
-$core->addBehavior(
+dcCore::app()->addBehavior(
     'adminPostFormItems',
     ['adminBehaviorPostExpired', 'adminPostFormItems']
 );
-$core->addBehavior(
+dcCore::app()->addBehavior(
     'adminPageFormItems',
     ['adminBehaviorPostExpired', 'adminPostFormItems']
 );
-$core->addBehavior(
+dcCore::app()->addBehavior(
     'adminBeforePostDelete',
     ['adminBehaviorPostExpired', 'adminBeforePostDelete']
 );
-$core->addBehavior(
+dcCore::app()->addBehavior(
     'adminBeforePageDelete',
     ['adminBehaviorPostExpired', 'adminBeforePostDelete']
 );
-$core->addBehavior(
+dcCore::app()->addBehavior(
     'adminAfterPostUpdate',
     ['adminBehaviorPostExpired', 'adminAfterPostSave']
 );
-$core->addBehavior(
+dcCore::app()->addBehavior(
     'adminAfterPageUpdate',
     ['adminBehaviorPostExpired', 'adminAfterPostSave']
 );
-$core->addBehavior(
+dcCore::app()->addBehavior(
     'adminAfterPostCreate',
     ['adminBehaviorPostExpired', 'adminAfterPostSave']
 );
-$core->addBehavior(
+dcCore::app()->addBehavior(
     'adminAfterPageCreate',
     ['adminBehaviorPostExpired', 'adminAfterPostSave']
 );
@@ -85,10 +88,9 @@ class adminBehaviorPostExpired
     /**
      * Add actions to posts page combo
      * 
-     * @param  dcCore             $core dcCore instance
      * @param  dcPostsActionsPage $ap   dcPostsActionsPage instance
      */
-    public static function adminPostsActionsPage(dcCore $core, dcPostsActionsPage $pa)
+    public static function adminPostsActions(dcPostsActions $pa)
     {
         $pa->addAction(
             array(
@@ -135,7 +137,6 @@ class adminBehaviorPostExpired
         $sidebar_items['post_expired'] = array(
             'title' => __('Expired date'),
             'items' => self::fieldsPostExpired(
-                $GLOBALS['core'],
                 $post->post_type,
                 $post->post_id
             )
@@ -149,7 +150,7 @@ class adminBehaviorPostExpired
      */
     public static function adminBeforePostDelete($post_id)
     {
-        self::delPostExpired($GLOBALS['core'], $post_id);
+        self::delPostExpired($post_id);
     }
 
     /**
@@ -160,9 +161,7 @@ class adminBehaviorPostExpired
      */
     public static function adminAfterPostSave(cursor $cur, $post_id)
     {
-        global $core;
-
-        self::delPostExpired($core, $post_id);
+        self::delPostExpired($post_id);
 
         if (!empty($_POST['post_expired_date'])
          && (!empty($_POST['post_expired_status'])
@@ -170,18 +169,17 @@ class adminBehaviorPostExpired
           || !empty($_POST['post_expired_selected'])
           || !empty($_POST['post_expired_comment'])
           || !empty($_POST['post_expired_trackback']))) {
-            self::setPostExpired($core, $post_id, $_POST);
+            self::setPostExpired($post_id, $_POST);
         }
     }
 
     /**
      * Posts actions callback to add expired date
      * 
-     * @param  dcCore             $core dcCore instance
-     * @param  dcPostsActionsPage $pa   dcPostsActionsPage instance
+     * @param  dcPostsActions   $pa   dcPostsActions instance
      * @param  ArrayObject        $post _POST actions
      */
-    public static function callbackAdd(dcCore $core, dcPostsActionsPage $pa, ArrayObject $post)
+    public static function callbackAdd(dcPostsActions $pa, ArrayObject $post)
     {
         # No entry
         $posts_ids = $pa->getIDs();
@@ -197,11 +195,11 @@ class adminBehaviorPostExpired
           || !empty($post['post_expired_comment'])
           || !empty($post['post_expired_trackback']))) {
             foreach($posts_ids as $post_id) {
-                self::delPostExpired($core, $post_id);
-                self::setPostExpired($core, $post_id, $post);
+                self::delPostExpired($post_id);
+                self::setPostExpired($post_id, $post);
             }
 
-            dcPage::addSuccessNotice(__('Expired date added.'));
+            dcAdminNotices::addSuccessNotice(__('Expired date added.'));
             $pa->redirect(true);
 
         # Display form
@@ -211,7 +209,7 @@ class adminBehaviorPostExpired
 
             $pa->beginPage(
                 dcPage::breadcrumb(array(
-                    html::escapeHTML($core->blog->name) => '',
+                    html::escapeHTML(dcCore::app()->blog->name) => '',
                     $pa->getCallerTitle() => $pa->getRedirection(true),
                     __('Add expired date to this selection') => '' 
                 )),
@@ -223,9 +221,9 @@ class adminBehaviorPostExpired
             '<form action="' . $pa->getURI() . '" method="post">' .
             $pa->getCheckboxes() .
 
-            implode('', self::fieldsPostExpired($core, $posts->post_type)) .
+            implode('', self::fieldsPostExpired($posts->post_type)) .
 
-            $core->formNonce() .
+            dcCore::app()->formNonce() .
             $pa->getHiddenFields() .
             form::hidden(array('action'), 'post_expired_add') .
             '<input type="submit" value="' . __('Save') . '" /></p>' .
@@ -238,11 +236,10 @@ class adminBehaviorPostExpired
     /**
      * Posts actions callback to add expired date
      * 
-     * @param  dcCore             $core dcCore instance
-     * @param  dcPostsActionsPage $pa   dcPostsActionsPage instance
+     * @param  dcPostsActions   $pa   dcPostsActions instance
      * @param  ArrayObject        $post _POST actions
      */
-    public static function callbackRemove(dcCore $core, dcPostsActionsPage $pa, ArrayObject $post)
+    public static function callbackRemove(dcPostsActions $pa, ArrayObject $post)
     {
         # No entry
         $posts_ids = $pa->getIDs();
@@ -252,32 +249,30 @@ class adminBehaviorPostExpired
 
         # Delete expired date
         foreach($posts_ids as $post_id) {
-            self::delPostExpired($core, $post_id);
+            self::delPostExpired($post_id);
         }
 
-        dcPage::addSuccessNotice(__('Expired date deleted.'));
+        dcAdminNotices::addSuccessNotice(__('Expired date deleted.'));
         $pa->redirect(true);
     }
 
     /**
      * Delete expired date
      * 
-     * @param  dcCore  $core    dcCore instance
      * @param  integer $post_id Post id
      */
-    protected static function delPostExpired(dcCore $core, $post_id)
+    protected static function delPostExpired($post_id)
     {
-        $core->meta->delPostMeta($post_id, 'post_expired');
+        dcCore::app()->meta->delPostMeta($post_id, 'post_expired');
     }
 
     /**
      * Save expired date
      * 
-     * @param dcCore  $core    dcCore instance
      * @param integer $post_id Post id
      * @param array   $post    _POST fields
      */
-    protected static function setPostExpired(dcCore $core, $post_id, $post)
+    protected static function setPostExpired($post_id, $post)
     {
         $post_expired = array(
             'status'=> '',
@@ -312,7 +307,7 @@ class adminBehaviorPostExpired
                 (string) $post['post_expired_trackback'];
         }
 
-        $core->meta->setPostMeta(
+        dcCore::app()->meta->setPostMeta(
             $post_id,
             'post_expired',
             encodePostExpired($post_expired)
@@ -322,17 +317,16 @@ class adminBehaviorPostExpired
     /**
      * Expired date form fields
      * 
-     * @param  dcCore $core      dcCore instance
      * @param  string $post_type Posts type
      * @return array             Array of HTML form fields
      */
-    protected static function fieldsPostExpired(dcCore $core, $post_type, $post_id = null)
+    protected static function fieldsPostExpired($post_type, $post_id = null)
     {
         $fields = $post_expired = array();
 
         if ($post_id) {
 
-            $rs = $core->meta->getMetadata([
+            $rs = dcCore::app()->meta->getMetadata([
                 'meta_type' => 'post_expired',
                 'post_id' => $post_id,
                 'limit' => 1
@@ -371,7 +365,7 @@ class adminBehaviorPostExpired
                 form::combo(
                     'post_expired_category',
                     self::categoriesCombo(
-                        $core->blog->getCategories(
+                        dcCore::app()->blog->getCategories(
                             array('post_type' => 'post')
                         )
                     ),
@@ -416,10 +410,10 @@ class adminBehaviorPostExpired
     /**
      * Custom categories combo
      * 
-     * @param  record $categories Categories recordset
+     * @param  dcRecord $categories Categories recordset
      * @return array              Categorires combo
      */
-    protected static function categoriesCombo(record $categories)
+    protected static function categoriesCombo(dcRecord $categories)
     {
         # Getting categories
         $categories_combo = array(
@@ -427,7 +421,7 @@ class adminBehaviorPostExpired
             __('Uncategorized') => '!'
         );
         try {
-            $categories = $GLOBALS['core']->blog->getCategories(
+            $categories = dcCore::app()->blog->getCategories(
                 array('post_type' => 'post')
             );
             while ($categories->fetch()) {

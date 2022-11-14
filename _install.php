@@ -16,15 +16,15 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 }
 
 # -- Module specs --
-$dc_min = '2.21';
+$dc_min = '2.24';
 $mod_id = 'postExpired';
 
 # -- Nothing to change below --
 try {
     # Check module version
     if (version_compare(
-        $core->getVersion($mod_id),
-        $core->plugins->moduleInfo($mod_id, 'version'),
+        dcCore::app()->getVersion($mod_id),
+        dcCore::app()->plugins->moduleInfo($mod_id, 'version'),
         '>='
     )) {
         return null;
@@ -39,14 +39,14 @@ try {
     }
 
     # Set module version
-    $core->setVersion(
+    dcCore::app()->setVersion(
         $mod_id,
-        $core->plugins->moduleInfo($mod_id, 'version')
+        dcCore::app()->plugins->moduleInfo($mod_id, 'version')
     );
 
     return true;
 } catch (Exception $e) {
-    $core->error->add($e->getMessage());
+    dcCore::app()->error->add($e->getMessage());
 
     return false;
 }

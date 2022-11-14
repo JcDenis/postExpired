@@ -19,10 +19,13 @@ $this->registerModule(
     'Expired entries',
     'Change entries options at a given date', 
     'Jean-Christian Denis and Contributors',
-    '2022.04.27',
+    '2022.11.12',
     [
-        'requires' => [['core', '2.21']],
-        'permissions'   => 'usage,contentadmin',
+        'requires' => [['core', '2.24']],
+        'permissions'   => dcCore::app()->auth->makePermissions([
+            dcAuth::PERMISSION_USAGE,
+            dcAuth::PERMISSION_CONTENT_ADMIN,
+        ]),
         'type'          => 'plugin',
         'support'       => 'https://github.com/JcDenis/postExpired',
         'details'       => 'https://plugins.dotaddict.org/dc2/details/postExpired',
