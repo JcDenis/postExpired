@@ -1,5 +1,6 @@
-2022.04.27.1 - dev
-- [ ] fix wrong timezone on admin vs public expired date
+2022.11.20
+- fix compatibility with Dotclear 2.24 (required)
+- fix wrong timezone on admin vs public expired date
 
 2022.04.27
 - require Dotclear 2.21.3

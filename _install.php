@@ -1,16 +1,15 @@
 <?php
 /**
  * @brief postExpired, a plugin for Dotclear 2
- * 
+ *
  * @package Dotclear
  * @subpackage Plugin
- * 
+ *
  * @author Jean-Christian Denis and Contributors
- * 
+ *
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
 if (!defined('DC_CONTEXT_ADMIN')) {
     return null;
 }
@@ -31,10 +30,12 @@ try {
     }
 
     # Check Dotclear version
-    if (!method_exists('dcUtils', 'versionsCompare') 
+    if (!method_exists('dcUtils', 'versionsCompare')
      || dcUtils::versionsCompare(DC_VERSION, $dc_min, '<', false)) {
         throw new Exception(sprintf(
-            '%s requires Dotclear %s', $mod_id, $dc_min
+            '%s requires Dotclear %s',
+            $mod_id,
+            $dc_min
         ));
     }
 

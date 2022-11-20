@@ -3,10 +3,9 @@
 [![Release](https://img.shields.io/github/v/release/JcDenis/postExpired)](https://github.com/JcDenis/postExpired/releases)
 [![Date](https://img.shields.io/github/release-date/JcDenis/postExpired)](https://github.com/JcDenis/postExpired/releases)
 [![Issues](https://img.shields.io/github/issues/JcDenis/postExpired)](https://github.com/JcDenis/postExpired/issues)
-[![Dotclear](https://img.shields.io/badge/dotclear-v2.20-blue.svg)](https://fr.dotclear.org/download)
+[![Dotclear](https://img.shields.io/badge/dotclear-v2.24-blue.svg)](https://fr.dotclear.org/download)
 [![Dotaddict](https://img.shields.io/badge/dotaddict-official-green.svg)](https://plugins.dotaddict.org/dc2/details/postExpired)
 [![License](https://img.shields.io/github/license/JcDenis/postExpired)](https://github.com/JcDenis/postExpired/blob/master/LICENSE)
-
 
 ## WHAT IS POSTEXPIRED ?
 
@@ -21,7 +20,7 @@ to change some options of a post at a given time.
  postExpired requires: 
 
   * contentadmin permissions
-  * Dotclear 2.21.3 
+  * Dotclear 2.24 
 
 ## USAGE
 
@@ -43,8 +42,8 @@ Notes:
 
  * License : [GNU GPL v2](https://www.gnu.org/licenses/old-licenses/lgpl-2.0.html)
  * Source & contribution : [GitHub Page](https://github.com/JcDenis/postExpired)
- * Packages & details:  [Dotaddict Page](https://plugins.dotaddict.org/dc2/details/postExpired)
- * Discuss & help: [Dotclear Forum](https://forum.dotclear.org/viewtopic.php?id=42305)
+ * Packages & details : [Dotaddict Page](https://plugins.dotaddict.org/dc2/details/postExpired)
+ * Discuss & help : [Dotclear Forum](https://forum.dotclear.org/viewtopic.php?id=42305)
 
 ## CONTRIBUTORS
 

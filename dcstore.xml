@@ -1,12 +1,13 @@
+<?xml version="1.0"?>
 <modules xmlns:da="http://dotaddict.org/da/">
-<module id="postExpired">
-<name>Billets périmés</name>
-<version>2022.04.27</version>
-<author>Jean-Christian Denis and Contributors</author>
-<desc>Change entries options at a given date</desc>
-<file>https://github.com/JcDenis/postExpired/releases/download/v2022.04.27/plugin-postExpired.zip</file>
-<da:dcmin>2.121</da:dcmin>
-<da:details>https://plugins.dotaddict.org/dc2/details/postExpired</da:details>
-<da:support>https://github.com/JcDenis/postExpired</da:support>
-</module>
+  <module id="postExpired">
+    <name>Expired entries</name>
+    <version>2022.11.12</version>
+    <author>Jean-Christian Denis and Contributors</author>
+    <desc>Change entries options at a given date</desc>
+    <file>https://github.com/JcDenis/postExpired/releases/download/v2022.11.12/plugin-postExpired.zip</file>
+    <da:dcmin>2.24</da:dcmin>
+    <da:details>https://plugins.dotaddict.org/dc2/details/postExpired</da:details>
+    <da:support>https://github.com/JcDenis/postExpired</da:support>
+  </module>
 </modules>
