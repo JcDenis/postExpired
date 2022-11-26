@@ -117,7 +117,7 @@ class adminBehaviorPostExpired
      */
     public static function adminPostHeaders()
     {
-        return dcPage::jsLoad('index.php?pf=postExpired/js/postexpired.js');
+        return dcPage::jsLoad(dcPage::getPF('postExpired/js/postexpired.js'));
     }
 
     /**
