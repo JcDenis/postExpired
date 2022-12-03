@@ -60,8 +60,8 @@ class publicBehaviorPostExpired
         # Get expired dates and post_id
         $posts = dcCore::app()->con->select(
             'SELECT P.post_id, P.post_tz, META.meta_id ' .
-            'FROM ' . dcCore::app()->prefix . 'post P ' .
-            'INNER JOIN ' . dcCore::app()->prefix . 'meta META ' .
+            'FROM ' . dcCore::app()->prefix . dcBlog::POST_TABLE_NAME . ' P ' .
+            'INNER JOIN ' . dcCore::app()->prefix . dcMeta::META_TABLE_NAME . ' META ' .
             'ON META.post_id = P.post_id ' .
             "WHERE blog_id = '" . dcCore::app()->con->escape(dcCore::app()->blog->id) . "' " .
             // Removed for quick compatibility with some plugins
@@ -78,7 +78,7 @@ class publicBehaviorPostExpired
         $now = dt::toUTC(time());
 
         # Prepared post cursor
-        $post_cur = dcCore::app()->con->openCursor(dcCore::app()->prefix . 'post');
+        $post_cur = dcCore::app()->con->openCursor(dcCore::app()->prefix . dcBlog::POST_TABLE_NAME);
 
         # Loop through marked posts
         $updated = false;
