@@ -15,7 +15,7 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 }
 
 # Check plugin version
-if (dcCore::app()->getVersion('postExpired') != dcCore::app()->plugins->moduleInfo('postExpired', 'version')) {
+if (dcCore::app()->getVersion(basename(__DIR__)) != dcCore::app()->plugins->moduleInfo(basename(__DIR__), 'version')) {
     return null;
 }
 
@@ -83,7 +83,7 @@ class adminBehaviorPostExpired
      */
     public static function adminPostHeaders()
     {
-        return dcPage::jsLoad(dcPage::getPF('postExpired/js/postexpired.js'));
+        return dcPage::jsModuleLoad(basename(__DIR__) . '/js/postexpired.js');
     }
 
     /**

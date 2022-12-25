@@ -14,7 +14,7 @@ if (!defined('DC_RC_PATH')) {
     return null;
 }
 
-if (dcCore::app()->getVersion('postExpired') != dcCore::app()->plugins->moduleInfo('postExpired', 'version')) {
+if (dcCore::app()->getVersion(basename(__DIR__)) != dcCore::app()->plugins->moduleInfo(basename(__DIR__), 'version')) {
     return null;
 }
 
