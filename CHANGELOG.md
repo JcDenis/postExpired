@@ -1,3 +1,9 @@
+2022.12.25
+- use SVG icon
+- use constants for database tables names
+- use abstract plugin id
+- fix install (unsed for now)
+
 2022.11.20
 - fix compatibility with Dotclear 2.24 (required)
 - fix wrong timezone on admin vs public expired date
