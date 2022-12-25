@@ -28,54 +28,20 @@ if (!dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([
 }
 
 # Admin behaviors
-dcCore::app()->addBehavior(
-    'adminPostsActions',
-    ['adminBehaviorPostExpired', 'adminPostsActions']
-);
-dcCore::app()->addBehavior(
-    'adminPagesActions',
-    ['adminBehaviorPostExpired', 'adminPostsActions']
-);
-dcCore::app()->addBehavior(
-    'adminPostHeaders',
-    ['adminBehaviorPostExpired', 'adminPostHeaders']
-);
-dcCore::app()->addBehavior(
-    'adminPageHeaders',
-    ['adminBehaviorPostExpired', 'adminPostHeaders']
-);
-dcCore::app()->addBehavior(
-    'adminPostFormItems',
-    ['adminBehaviorPostExpired', 'adminPostFormItems']
-);
-dcCore::app()->addBehavior(
-    'adminPageFormItems',
-    ['adminBehaviorPostExpired', 'adminPostFormItems']
-);
-dcCore::app()->addBehavior(
-    'adminBeforePostDelete',
-    ['adminBehaviorPostExpired', 'adminBeforePostDelete']
-);
-dcCore::app()->addBehavior(
-    'adminBeforePageDelete',
-    ['adminBehaviorPostExpired', 'adminBeforePostDelete']
-);
-dcCore::app()->addBehavior(
-    'adminAfterPostUpdate',
-    ['adminBehaviorPostExpired', 'adminAfterPostSave']
-);
-dcCore::app()->addBehavior(
-    'adminAfterPageUpdate',
-    ['adminBehaviorPostExpired', 'adminAfterPostSave']
-);
-dcCore::app()->addBehavior(
-    'adminAfterPostCreate',
-    ['adminBehaviorPostExpired', 'adminAfterPostSave']
-);
-dcCore::app()->addBehavior(
-    'adminAfterPageCreate',
-    ['adminBehaviorPostExpired', 'adminAfterPostSave']
-);
+dcCore::app()->addBehaviors([
+    'adminPostsActions'     => ['adminBehaviorPostExpired', 'adminPostsActions'],
+    'adminPagesActions'     => ['adminBehaviorPostExpired', 'adminPostsActions'],
+    'adminPostHeaders'      => ['adminBehaviorPostExpired', 'adminPostHeaders'],
+    'adminPageHeaders'      => ['adminBehaviorPostExpired', 'adminPostHeaders'],
+    'adminPostFormItems'    => ['adminBehaviorPostExpired', 'adminPostFormItems'],
+    'adminPageFormItems'    => ['adminBehaviorPostExpired', 'adminPostFormItems'],
+    'adminBeforePostDelete' => ['adminBehaviorPostExpired', 'adminBeforePostDelete'],
+    'adminBeforePageDelete' => ['adminBehaviorPostExpired', 'adminBeforePostDelete'],
+    'adminAfterPostUpdate'  => ['adminBehaviorPostExpired', 'adminAfterPostSave'],
+    'adminAfterPageUpdate'  => ['adminBehaviorPostExpired', 'adminAfterPostSave'],
+    'adminAfterPostCreate'  => ['adminBehaviorPostExpired', 'adminAfterPostSave'],
+    'adminAfterPageCreate'  => ['adminBehaviorPostExpired', 'adminAfterPostSave'],
+]);
 
 /**
  * @ingroup DC_PLUGIN_POSTEXPIRED
