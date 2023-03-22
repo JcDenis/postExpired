@@ -18,16 +18,16 @@ $this->registerModule(
     'Expired entries',
     'Change entries options at a given date',
     'Jean-Christian Denis and Contributors',
-    '2022.12.25',
+    '2023.03.21',
     [
-        'requires'    => [['core', '2.24']],
+        'requires'    => [['core', '2.25']],
         'permissions' => dcCore::app()->auth->makePermissions([
             dcAuth::PERMISSION_USAGE,
             dcAuth::PERMISSION_CONTENT_ADMIN,
         ]),
-        'type'        => 'plugin',
-        'support'     => 'https://github.com/JcDenis/' . basename(__DIR__),
-        'details'     => 'https://plugins.dotaddict.org/dc2/details/' . basename(__DIR__),
-        'repository'  => 'https://raw.githubusercontent.com/JcDenis/' . basename(__DIR__) . '/master/dcstore.xml',
+        'type'       => 'plugin',
+        'support'    => 'https://github.com/JcDenis/' . basename(__DIR__),
+        'details'    => 'https://plugins.dotaddict.org/dc2/details/' . basename(__DIR__),
+        'repository' => 'https://raw.githubusercontent.com/JcDenis/' . basename(__DIR__) . '/master/dcstore.xml',
     ]
 );

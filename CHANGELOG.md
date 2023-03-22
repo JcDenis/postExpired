@@ -1,3 +1,8 @@
+2023.03.21
+- require dotclear 2.25
+- use namespace
+- use DateTimeZone
+
 2022.12.25
 - use SVG icon
 - use constants for database tables names

@@ -2,11 +2,11 @@
 <modules xmlns:da="http://dotaddict.org/da/">
   <module id="postExpired">
     <name>Expired entries</name>
-    <version>2022.12.25</version>
+    <version>2023.03.21</version>
     <author>Jean-Christian Denis and Contributors</author>
     <desc>Change entries options at a given date</desc>
-    <file>https://github.com/JcDenis/postExpired/releases/download/v2022.12.25/plugin-postExpired.zip</file>
-    <da:dcmin>2.24</da:dcmin>
+    <file>https://github.com/JcDenis/postExpired/releases/download/v2023.03.21/plugin-postExpired.zip</file>
+    <da:dcmin>2.25</da:dcmin>
     <da:details>https://plugins.dotaddict.org/dc2/details/postExpired</da:details>
     <da:support>https://github.com/JcDenis/postExpired</da:support>
   </module>
