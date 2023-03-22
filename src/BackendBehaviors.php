@@ -15,13 +15,13 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\postExpired;
 
 use ArrayObject;
+use DateTimeZone;
 use cursor;
 use dcCore;
 use dcPostsActions;
 use dcPage;
 use dcRecord;
 use Exception;
-use dt;
 use html;
 use form;
 use formSelectOption;
@@ -209,7 +209,7 @@ class BackendBehaviors
      *
      * @param  integer $post_id Post id
      */
-    protected static function delPostExpired(int $post_id): void
+    private static function delPostExpired(int $post_id): void
     {
         dcCore::app()->meta->delPostMeta($post_id, My::META_TYPE);
     }
@@ -220,7 +220,7 @@ class BackendBehaviors
      * @param integer $post_id Post id
      * @param ArrayObject   $post    _POST fields
      */
-    protected static function setPostExpired(int $post_id, ArrayObject $post): void
+    private static function setPostExpired(int $post_id, ArrayObject $post): void
     {
         $post_expired = [
             'status'    => '',
@@ -228,10 +228,7 @@ class BackendBehaviors
             'selected'  => '',
             'comment'   => '',
             'trackback' => '',
-            'date'      => date(
-                'Y-m-d H:i:00',
-                strtotime((string) $post['post_expired_date'])
-            ),
+            'date'      => self::dateFromUser($post['post_expired_date']),
         ];
 
         if (!empty($post['post_expired_status'])) {
@@ -263,7 +260,7 @@ class BackendBehaviors
      * @param  string $post_type Posts type
      * @return array             Array of HTML form fields
      */
-    protected static function fieldsPostExpired(string $post_type, ?int $post_id = null): array
+    private static function fieldsPostExpired(string $post_type, ?int $post_id = null): array
     {
         $fields = $post_expired = [];
 
@@ -282,7 +279,7 @@ class BackendBehaviors
         $fields['post_expired_date'] = '<p><label for="post_expired_date">' .
             __('Date:') . '</label>' .
             form::datetime('post_expired_date', [
-                'default' => html::escapeHTML(dt::str('%Y-%m-%dT%H:%M', (int) strtotime((string) ($post_expired['date'] ?? 'now')))),
+                'default' => html::escapeHTML(self::dateToUser($post_expired['date'] ?? 'now')),
                 'class'   => (empty($post_expired['date']) ? 'invalid' : ''),
             ])
              . '</p>';
@@ -348,7 +345,7 @@ class BackendBehaviors
      * @param  dcRecord $categories Categories recordset
      * @return array              Categorires combo
      */
-    protected static function categoriesCombo(dcRecord $categories): array
+    private static function categoriesCombo(dcRecord $categories): array
     {
         # Getting categories
         $categories_combo = [
@@ -378,7 +375,7 @@ class BackendBehaviors
      *
      * @return array Status combo
      */
-    protected static function statusCombo(): array
+    private static function statusCombo(): array
     {
         return [
             __('Not changed') => '',
@@ -393,7 +390,7 @@ class BackendBehaviors
      *
      * @return array Selection combo
      */
-    protected static function selectedCombo(): array
+    private static function selectedCombo(): array
     {
         return [
             __('Not changed')  => '',
@@ -407,7 +404,7 @@ class BackendBehaviors
      *
      * @return array Comment status combo
      */
-    protected static function commentCombo(): array
+    private static function commentCombo(): array
     {
         return [
             __('Not changed') => '',
@@ -421,12 +418,26 @@ class BackendBehaviors
      *
      * @return array Trackback status combo
      */
-    protected static function trackbackCombo(): array
+    private static function trackbackCombo(): array
     {
         return [
             __('Not changed') => '',
             __('Opened')      => '!1',
             __('Closed')      => '!0',
         ];
+    }
+
+    private static function dateFromUser(string $date): string
+    {
+        $d = date_create($date, new DateTimeZone(dcCore::app()->auth->getInfo('user_tz')));
+
+        return $d ? date_format($d->setTimezone(new DateTimeZone('UTC')), 'Y-m-d H:i:00') : '';
+    }
+
+    private static function dateToUser(string $date): string
+    {
+        $d = date_create($date, new DateTimeZone('UTC'));
+
+        return $d ? date_format($d->setTimezone(new DateTimeZone(dcCore::app()->auth->getInfo('user_tz'))), 'Y-m-d\TH:i') : '';
     }
 }

@@ -14,11 +14,11 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\postExpired;
 
+use DateTimeZone;
 use dcBlog;
 use dcCore;
 use dcMeta;
 use dcRecord;
-use dt;
 
 /**
  * @ingroup DC_PLUGIN_POSTEXPIRED
@@ -49,8 +49,9 @@ class FrontendBehaviors
             return;
         }
 
-        # Get curent timestamp
-        $now = dt::toUTC(time());
+        # Prepared date
+        $utc    = new DateTimeZone('UTC');
+        $now_tz = (int) date_format(date_create('now', $utc), 'U');
 
         # Prepared post cursor
         $post_cur = dcCore::app()->con->openCursor(dcCore::app()->prefix . dcBlog::POST_TABLE_NAME);
@@ -62,8 +63,9 @@ class FrontendBehaviors
             $post_expired = My::decode($posts->f('meta_id'));
 
             # Check if post is outdated
-            $now_tz  = $now + dt::getTimeOffset($posts->f('post_tz'), $now);
-            $meta_tz = strtotime($post_expired['date']);
+            $meta_dt = date_create((string) $post_expired['date'], $utc);
+            $meta_tz = $meta_dt ? date_format($meta_dt, 'U') : 0;
+
             if ($now_tz > $meta_tz) {
                 # Delete meta for expired date
                 dcCore::app()->auth->sudo(
