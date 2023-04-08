@@ -38,7 +38,7 @@ class FrontendBehaviors
             'FROM ' . dcCore::app()->prefix . dcBlog::POST_TABLE_NAME . ' P ' .
             'INNER JOIN ' . dcCore::app()->prefix . dcMeta::META_TABLE_NAME . ' META ' .
             'ON META.post_id = P.post_id ' .
-            "WHERE blog_id = '" . dcCore::app()->con->escape(dcCore::app()->blog->id) . "' " .
+            "WHERE blog_id = '" . dcCore::app()->con->escapeStr((string) dcCore::app()->blog->id) . "' " .
             // Removed for quick compatibility with some plugins
             //"AND P.post_type = 'post' " .
             "AND META.meta_type = '" . My::META_TYPE . "' "
@@ -119,7 +119,7 @@ class FrontendBehaviors
                 # Update post
                 $post_cur->update(
                     'WHERE post_id = ' . $posts->f('post_id') . ' ' .
-                    "AND blog_id = '" . dcCore::app()->con->escape(dcCore::app()->blog->id) . "' "
+                    "AND blog_id = '" . dcCore::app()->con->escapeStr((string) dcCore::app()->blog->id) . "' "
                 );
 
                 $updated = true;
