@@ -21,10 +21,19 @@ use dcCore;
 use dcPostsActions;
 use dcPage;
 use dcRecord;
+use Dotclear\Helper\Html\Form\{
+    Datetime,
+    Form,
+    Hidden,
+    Label,
+    Option,
+    Para,
+    Text,
+    Select,
+    Submit
+};
+use Dotclear\Helper\Html\Html;
 use Exception;
-use html;
-use form;
-use formSelectOption;
 
 /**
  * @ingroup DC_PLUGIN_POSTEXPIRED
@@ -86,7 +95,8 @@ class BackendBehaviors
             'title' => __('Expired date'),
             'items' => self::fieldsPostExpired(
                 $post->f('post_type'),
-                (int) $post->f('post_id')
+                (int) $post->f('post_id'),
+                true
             ),
         ];
     }
@@ -157,7 +167,7 @@ class BackendBehaviors
 
             $pa->beginPage(
                 dcPage::breadcrumb([
-                    html::escapeHTML(dcCore::app()->blog->name) => '',
+                    Html::escapeHTML(dcCore::app()->blog->name) => '',
                     $pa->getCallerTitle()                       => $pa->getRedirection(true),
                     __('Add expired date to this selection')    => '',
                 ]),
@@ -166,16 +176,18 @@ class BackendBehaviors
             );
 
             echo
-            '<form action="' . $pa->getURI() . '" method="post">' .
-            $pa->getCheckboxes() .
-
-            implode('', self::fieldsPostExpired($posts->f('post_type'))) .
-
-            dcCore::app()->formNonce() .
-            $pa->getHiddenFields() .
-            form::hidden(['action'], 'post_expired_add') .
-            '<input type="submit" value="' . __('Save') . '" /></p>' .
-            '</form>';
+            (new Form('peadd'))->method('post')->action($pa->getURI())->fields([
+                (new Text('', $pa->getCheckboxes())),
+                (new Para())->items(array_merge(
+                    self::fieldsPostExpired($posts->f('post_type'), null, false),
+                    $pa->hiddenFields(),
+                    [
+                        dcCore::app()->formNonce(false),
+                        (new Hidden(['action'], 'post_expired_add')),
+                        (new Submit(['do']))->value(__('Save')),
+                    ],
+                )),
+            ])->render();
 
             $pa->endPage();
         }
@@ -257,10 +269,12 @@ class BackendBehaviors
     /**
      * Expired date form fields
      *
-     * @param  string $post_type Posts type
-     * @return array             Array of HTML form fields
+     * @param   string      $post_type  Posts type
+     * @param   null|int    $post_id    Post ID
+     * @param   bool        $render     Render fileds to HTML
+     * @return  array             Array of object form fields
      */
-    private static function fieldsPostExpired(string $post_type, ?int $post_id = null): array
+    private static function fieldsPostExpired(string $post_type, ?int $post_id = null, bool $render = true): array
     {
         $fields = $post_expired = [];
 
@@ -276,65 +290,49 @@ class BackendBehaviors
             }
         }
 
-        $fields['post_expired_date'] = '<p><label for="post_expired_date">' .
-            __('Date:') . '</label>' .
-            form::datetime('post_expired_date', [
-                'default' => html::escapeHTML(self::dateToUser($post_expired['date'] ?? 'now')),
-                'class'   => (empty($post_expired['date']) ? 'invalid' : ''),
-            ])
-             . '</p>';
+        $fields['post_expired_date'] = (new Para())->items([
+            (new Label(__('Date:')))->for('post_expired_date'),
+            (new Datetime('post_expired_date', Html::escapeHTML(self::dateToUser($post_expired['date'] ?? 'now'))))->class(empty($post_expired['date']) ? 'invalid' : ''),
+        ]);
 
-        $fields['post_expired_status'] = '<h5>' . __('On this date, change:') . '</h5>' .
-            '<p><label for="post_expired_status">' .
-            __('Status:') . '</label>' .
-            form::combo(
-                'post_expired_status',
-                self::statusCombo(),
-                empty($post_expired['status']) ?
-                    '' : $post_expired['status']
-            ) . '</p>';
+        $fields['post_expired_status'] = (new Para())->items([
+            (new Text('strong', __('On this date, change:'))),
+            (new Text('br')),
+            (new Label(__('Status:')))->for('post_expired_status'),
+            (new Select('post_expired_status'))->default(empty($post_expired['status']) ? '' : $post_expired['status'])->items(self::statusCombo()),
+        ]);
 
         if ($post_type == 'post') {
-            $fields['post_expired_category'] = '<p><label for="post_expired_category">' .
-                __('Category:') . '</label>' .
-                form::combo(
-                    'post_expired_category',
-                    self::categoriesCombo(
-                        dcCore::app()->blog->getCategories(
-                            ['post_type' => 'post']
-                        )
-                    ),
-                    empty($post_expired['category']) ?
-                        '' : $post_expired['category']
-                ) . '</p>';
+            $fields['post_expired_category'] = (new Para())->items([
+                (new Label(__('Category:')))->for('post_expired_category'),
+                (new Select('post_expired_category'))->default(empty($post_expired['category']) ? '' : $post_expired['category'])->items(self::categoriesCombo(
+                    dcCore::app()->blog->getCategories(
+                        ['post_type' => 'post']
+                    )
+                )),
+            ]);
 
-            $fields['post_expired_selected'] = '<p><label for="post_expired_selected">' .
-                __('Selection:') . '</label>' .
-                form::combo(
-                    'post_expired_selected',
-                    self::selectedCombo(),
-                    empty($post_expired['selected']) ?
-                        '' : $post_expired['selected']
-                ) . '</p>';
+            $fields['post_expired_selected'] = (new Para())->items([
+                (new Label(__('Selection:')))->for('post_expired_selected'),
+                (new Select('post_expired_selected'))->default(empty($post_expired['selected']) ? '' : $post_expired['selected'])->items(self::selectedCombo()),
+            ]);
         }
 
-        $fields['post_expired_comment'] = '<p><label for="post_expired_comment">' .
-            __('Comments status:') . '</label>' .
-            form::combo(
-                'post_expired_comment',
-                self::commentCombo(),
-                empty($post_expired['comment']) ?
-                    '' : $post_expired['comment']
-            ) . '</p>';
+        $fields['post_expired_comment'] = (new Para())->items([
+            (new Label(__('Comments status:')))->for('post_expired_comment'),
+            (new Select('post_expired_comment'))->default(empty($post_expired['comment']) ? '' : $post_expired['comment'])->items(self::commentCombo()),
+        ]);
 
-        $fields['post_expired_trackback'] = '<p><label for="post_expired_trackback">' .
-            __('Trackbacks status:') . '</label>' .
-            form::combo(
-                'post_expired_trackback',
-                self::trackbackCombo(),
-                empty($post_expired['trackback']) ?
-                    '' : $post_expired['trackback']
-            ) . '</p>';
+        $fields['post_expired_trackback'] = (new Para())->items([
+            (new Label(__('Trackbacks status:')))->for('post_expired_trackback'),
+            (new Select('post_expired_trackback'))->default(empty($post_expired['trackback']) ? '' : $post_expired['trackback'])->items(self::trackbackCombo()),
+        ]);
+
+        if ($render) {
+            foreach ($fields as $k => $v) {
+                $fields[$k] = $v->render();
+            }
+        }
 
         return $fields;
     }
@@ -358,8 +356,8 @@ class BackendBehaviors
                 ['post_type' => 'post']
             );
             while ($categories->fetch()) {
-                $categories_combo[] = new formSelectOption(
-                    str_repeat('&nbsp;&nbsp;', ((int) $categories->f('level')) - 1) . '&bull; ' . html::escapeHTML($categories->f('cat_title')),
+                $categories_combo[] = new Option(
+                    str_repeat('&nbsp;&nbsp;', ((int) $categories->f('level')) - 1) . '&bull; ' . Html::escapeHTML($categories->f('cat_title')),
                     '!' . $categories->f('cat_id')
                 );
             }
