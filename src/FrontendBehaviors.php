@@ -19,6 +19,10 @@ use dcBlog;
 use dcCore;
 use dcMeta;
 use Dotclear\Database\MetaRecord;
+use Dotclear\Database\Statement\{
+    JoinStatement,
+    SelectStatement
+};
 
 /**
  * @ingroup DC_PLUGIN_POSTEXPIRED
@@ -28,66 +32,78 @@ use Dotclear\Database\MetaRecord;
 class FrontendBehaviors
 {
     /**
-     * Check if there are expired dates
+     * Check if there are expired dates.
      */
     public static function publicBeforeDocument(): void
     {
-        # Get expired dates and post_id
-        $posts = dcCore::app()->con->select(
-            'SELECT P.post_id, P.post_tz, META.meta_id ' .
-            'FROM ' . dcCore::app()->prefix . dcBlog::POST_TABLE_NAME . ' P ' .
-            'INNER JOIN ' . dcCore::app()->prefix . dcMeta::META_TABLE_NAME . ' META ' .
-            'ON META.post_id = P.post_id ' .
-            "WHERE blog_id = '" . dcCore::app()->con->escapeStr((string) dcCore::app()->blog->id) . "' " .
-            // Removed for quick compatibility with some plugins
-            //"AND P.post_type = 'post' " .
-            "AND META.meta_type = '" . My::META_TYPE . "' "
-        );
+        // nullsafe
+        if (is_null(dcCore::app()->auth) || is_null(dcCore::app()->blog)) {
+            return;
+        }
 
-        # No expired date
+        // Get expired dates and post_id
+        $sql   = new SelectStatement();
+        $posts = $sql->from(dcCore::app()->prefix . dcBlog::POST_TABLE_NAME)
+            ->columns([
+                'P.post_id',
+                'P.post_tz',
+                'META.meta_id',
+            ])
+            ->join(
+                (new JoinStatement())
+                    ->inner()
+                    ->from($sql->as(dcCore::app()->prefix . dcMeta::META_TABLE_NAME, 'META'))
+                    ->on('META.post_id = P.post_id')
+                    ->statement()
+            )
+            ->where('blog_id = ' . $sql->quote((string) dcCore::app()->blog->id))
+            ->and('META.meta_type = ' . $sql->quote(My::META_TYPE))
+            ->select();
+
+        // No expired date
         if ($posts->isEmpty()) {
             return;
         }
 
-        # Prepared date
+        // Prepared date
         $utc    = new DateTimeZone('UTC');
         $now_tz = (int) date_format(date_create('now', $utc), 'U');
 
-        # Prepared post Cursor
+        // Prepared post Cursor
         $post_cur = dcCore::app()->con->openCursor(dcCore::app()->prefix . dcBlog::POST_TABLE_NAME);
 
-        # Loop through marked posts
+        // Loop through marked posts
         $updated = false;
         while ($posts->fetch()) {
-            # Decode meta record
+            // Decode meta record
             $post_expired = My::decode($posts->f('meta_id'));
 
-            # Check if post is outdated
+            // Check if post is outdated
             $meta_dt = date_create((string) $post_expired['date'], $utc);
             $meta_tz = $meta_dt ? date_format($meta_dt, 'U') : 0;
 
             if ($now_tz > $meta_tz) {
-                # Delete meta for expired date
+                // Delete meta for expired date
                 dcCore::app()->auth->sudo(
                     [dcCore::app()->meta, 'delPostMeta'],
                     $posts->f('post_id'),
                     My::META_TYPE
                 );
 
-                # Prepare post Cursor
+                // Prepare post Cursor
                 $post_cur->clean();
                 $post_cur->setField('post_upddt', date('Y-m-d H:i:s', $now_tz));
 
-                # Loop through actions
+                // Loop through actions
                 foreach ($post_expired as $k => $v) {
                     if (empty($v)) {
                         continue;
                     }
 
-                    # values are prefixed by "!"
+                    // values are prefixed by "!"
                     $v = (int) substr($v, 1);
 
-                    # Put value in post Cursor
+                    // Put value in post Cursor
                     switch($k) {
                         case 'status':
                             $post_cur->setField('post_status', $v);
@@ -116,7 +132,7 @@ class FrontendBehaviors
                     }
                 }
 
-                # Update post
+                // Update post
                 $post_cur->update(
                     'WHERE post_id = ' . $posts->f('post_id') . ' ' .
                     "AND blog_id = '" . dcCore::app()->con->escapeStr((string) dcCore::app()->blog->id) . "' "
@@ -126,7 +142,7 @@ class FrontendBehaviors
             }
         }
 
-        # Say blog is updated
+        // Say blog is updated
         if ($updated) {
             dcCore::app()->blog->triggerBlog();
         }
