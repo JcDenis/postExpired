@@ -43,7 +43,7 @@ class FrontendBehaviors
 
         // Get expired dates and post_id
         $sql   = new SelectStatement();
-        $posts = $sql->from(dcCore::app()->prefix . dcBlog::POST_TABLE_NAME)
+        $posts = $sql->from($sql->as(dcCore::app()->prefix . dcBlog::POST_TABLE_NAME, 'P'))
             ->columns([
                 'P.post_id',
                 'P.post_tz',
@@ -61,7 +61,7 @@ class FrontendBehaviors
             ->select();
 
         // No expired date
-        if ($posts->isEmpty()) {
+        if (is_null($posts) || $posts->isEmpty()) {
             return;
         }
 
