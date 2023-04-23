@@ -3,7 +3,7 @@
 [![Release](https://img.shields.io/github/v/release/JcDenis/postExpired)](https://github.com/JcDenis/postExpired/releases)
 [![Date](https://img.shields.io/github/release-date/JcDenis/postExpired)](https://github.com/JcDenis/postExpired/releases)
 [![Issues](https://img.shields.io/github/issues/JcDenis/postExpired)](https://github.com/JcDenis/postExpired/issues)
-[![Dotclear](https://img.shields.io/badge/dotclear-v2.25-blue.svg)](https://fr.dotclear.org/download)
+[![Dotclear](https://img.shields.io/badge/dotclear-v2.26-blue.svg)](https://fr.dotclear.org/download)
 [![Dotaddict](https://img.shields.io/badge/dotaddict-official-green.svg)](https://plugins.dotaddict.org/dc2/details/postExpired)
 [![License](https://img.shields.io/github/license/JcDenis/postExpired)](https://github.com/JcDenis/postExpired/blob/master/LICENSE)
 
@@ -20,7 +20,7 @@ to change some options of a post at a given time.
  postExpired requires: 
 
   * contentadmin permissions
-  * Dotclear 2.25
+  * Dotclear 2.26
 
 ## USAGE
 

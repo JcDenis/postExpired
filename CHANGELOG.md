@@ -1,3 +1,10 @@
+2023.04.23
+- require dotclear 2.26
+- use latest dotclear namespace
+- use sql statement
+- fix nullsafe warnings
+- add some inline code doc
+
 2023.03.21
 - require dotclear 2.25
 - use namespace

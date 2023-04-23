@@ -9,19 +9,21 @@
 # DOT NOT MODIFY THIS FILE !
 #
 
-l10n::$locales['Expired entries']                    = 'Billets périmés';
-l10n::$locales['Add expired date']                   = 'Ajouter une date de péremption';
-l10n::$locales['Remove expired date']                = 'Retirer une date de péremption';
-l10n::$locales['Expired date']                       = 'Date de péremption';
-l10n::$locales['Expired date added.']                = 'Date de péremption ajoutée.';
-l10n::$locales['Add expired date to this selection'] = 'Ajouter une date de péremtion à cette sélection';
-l10n::$locales['Expired date deleted.']              = 'Dtae de péremtion supprimé';
-l10n::$locales['On this date, change:']              = 'Á cette date, changer :';
-l10n::$locales['Selection:']                         = 'Séléction :';
-l10n::$locales['Comments status:']                   = 'Status des commentaires :';
-l10n::$locales['Trackbacks status:']                 = 'Status des rétroliens :';
-l10n::$locales['Not changed']                        = 'Inchangé';
-l10n::$locales['Opened']                             = 'Ouvert';
-l10n::$locales['Closed']                             = 'Fermé';
-l10n::$locales['Expired on']                         = 'Expire le';
-l10n::$locales['This entry has no expiration date']  = 'Ce billet n\'a pas de date de péremption';
+use Dotclear\Helper\L10n;
+
+L10n::$locales['Expired entries']                    = 'Billets périmés';
+L10n::$locales['Add expired date']                   = 'Ajouter une date de péremption';
+L10n::$locales['Remove expired date']                = 'Retirer une date de péremption';
+L10n::$locales['Expired date']                       = 'Date de péremption';
+L10n::$locales['Expired date added.']                = 'Date de péremption ajoutée.';
+L10n::$locales['Add expired date to this selection'] = 'Ajouter une date de péremtion à cette sélection';
+L10n::$locales['Expired date deleted.']              = 'Dtae de péremtion supprimé';
+L10n::$locales['On this date, change:']              = 'Á cette date, changer :';
+L10n::$locales['Selection:']                         = 'Séléction :';
+L10n::$locales['Comments status:']                   = 'Status des commentaires :';
+L10n::$locales['Trackbacks status:']                 = 'Status des rétroliens :';
+L10n::$locales['Not changed']                        = 'Inchangé';
+L10n::$locales['Opened']                             = 'Ouvert';
+L10n::$locales['Closed']                             = 'Fermé';
+L10n::$locales['Expired on']                         = 'Expire le';
+L10n::$locales['This entry has no expiration date']  = 'Ce billet n\'a pas de date de péremption';
