@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\postExpired;
 
 use dcCore;
-use dcRecord;
+use Dotclear\Database\MetaRecord;
 use rsExtPost;
 
 /**
@@ -25,17 +25,19 @@ use rsExtPost;
  */
 class rsExtPostExpired extends rsExtPost
 {
+    /** @var    array   $memory     Memory to prevent redondant call */
     protected static array $memory = [];
 
     /**
-     * Retrieve expired date of a post
+     * Retrieve expired date of a post.
      *
-     * @param  dcRecord  $rs          Post recordset
-     * @return string                 Expired date or null
+     * @param   MetaRecord  $rs     Post recordset
+     *
+     * @return  string  Expired date or null
      */
-    public static function postExpiredDate(dcRecord $rs): string
+    public static function postExpiredDate(MetaRecord $rs): string
     {
-        if (!self::$memory[$rs->f('post_id')]) { //memory
+        if (!static::$memory[$rs->f('post_id')]) {
             $rs_date = dcCore::app()->meta->getMetadata([
                 'meta_type' => My::META_TYPE,
                 'post_id'   => $rs->f('post_id'),
@@ -46,10 +48,10 @@ class rsExtPostExpired extends rsExtPost
                 return '';
             }
 
-            $v                               = My::decode($rs_date->f('meta_id'));
-            self::$memory[$rs->f('post_id')] = $v['date'];
+            $v                                 = My::decode($rs_date->f('meta_id'));
+            static::$memory[$rs->f('post_id')] = $v['date'];
         }
 
-        return self::$memory[$rs->f('post_id')];
+        return static::$memory[$rs->f('post_id')];
     }
 }

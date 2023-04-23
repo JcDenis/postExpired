@@ -16,11 +16,13 @@ namespace Dotclear\Plugin\postExpired;
 
 use ArrayObject;
 use DateTimeZone;
-use cursor;
 use dcCore;
 use dcPostsActions;
 use dcPage;
-use dcRecord;
+use Dotclear\Database\{
+    Cursor,
+    MetaRecord
+};
 use Dotclear\Helper\Html\Form\{
     Datetime,
     Form,
@@ -43,9 +45,9 @@ use Exception;
 class BackendBehaviors
 {
     /**
-     * Add actions to posts page combo
+     * Add actions to posts page combo.
      *
-     * @param  dcPostsActions $pa   dcPostsActions instance
+     * @param   dcPostsActions  $pa     dcPostsActions instance
      */
     public static function adminPostsActions(dcPostsActions $pa): void
     {
@@ -69,9 +71,9 @@ class BackendBehaviors
     }
 
     /**
-     * Add javascript for date field and toggle
+     * Add javascript for date field and toggle.
      *
-     * @return string HTML head
+     * @return  string  HTML head
      */
     public static function adminPostHeaders(): string
     {
@@ -79,13 +81,13 @@ class BackendBehaviors
     }
 
     /**
-     * Add form to post sidebar
+     * Add form to post sidebar.
      *
-     * @param  ArrayObject $main_items    Main items
-     * @param  ArrayObject $sidebar_items Sidebar items
-     * @param  ?dcRecord   $post          Post record or null
+     * @param   ArrayObject     $main_items     Main items
+     * @param   ArrayObject     $sidebar_items  Sidebar items
+     * @param   ?MetaRecord     $post           Post record or null
      */
-    public static function adminPostFormItems(ArrayObject $main_items, ArrayObject $sidebar_items, ?dcRecord $post): void
+    public static function adminPostFormItems(ArrayObject $main_items, ArrayObject $sidebar_items, ?MetaRecord $post): void
     {
         if ($post === null) {
             return;
@@ -102,9 +104,9 @@ class BackendBehaviors
     }
 
     /**
-     * Delete expired date on post edition
+     * Delete expired date on post edition.
      *
-     * @param  integer $post_id Post id
+     * @param   int     $post_id    Post id
      */
     public static function adminBeforePostDelete(int $post_id): void
     {
@@ -112,12 +114,12 @@ class BackendBehaviors
     }
 
     /**
-     * Add expired date on post edition
+     * Add expired date on post edition.
      *
-     * @param  cursor $cur      Current post cursor
-     * @param  integer $post_id Post id
+     * @param   Cursor  $cur        Current post Cursor
+     * @param   int     $post_id    Post id
      */
-    public static function adminAfterPostSave(cursor $cur, int $post_id): void
+    public static function adminAfterPostSave(Cursor $cur, int $post_id): void
     {
         self::delPostExpired($post_id);
 
@@ -132,20 +134,25 @@ class BackendBehaviors
     }
 
     /**
-     * Posts actions callback to add expired date
+     * Posts actions callback to add expired date.
      *
-     * @param  dcPostsActions   $pa   dcPostsActions instance
-     * @param  ArrayObject        $post _POST actions
+     * @param   dcPostsActions  $pa     dcPostsActions instance
+     * @param   ArrayObject     $post   _POST actions
      */
     public static function callbackAdd(dcPostsActions $pa, ArrayObject $post): void
     {
-        # No entry
+        // nullsafe
+        if (is_null(dcCore::app()->blog)) {
+            return;
+        }
+
+        // No entry
         $posts_ids = $pa->getIDs();
         if (empty($posts_ids)) {
             throw new Exception(__('No entry selected'));
         }
 
-        # Add epired date
+        // Add epired date
         if (!empty($post['post_expired_date'])
          && (!empty($post['post_expired_status'])
           || !empty($post['post_expired_category'])
@@ -160,9 +167,9 @@ class BackendBehaviors
             dcPage::addSuccessNotice(__('Expired date added.'));
             $pa->redirect(true);
 
-        # Display form
+        // Display form
         } else {
-            # Get records to know post type
+            // Get records to know post type
             $posts = $pa->getRS();
 
             $pa->beginPage(
@@ -194,20 +201,20 @@ class BackendBehaviors
     }
 
     /**
-     * Posts actions callback to add expired date
+     * Posts actions callback to add expired date.
      *
-     * @param  dcPostsActions   $pa   dcPostsActions instance
-     * @param  ArrayObject        $post _POST actions
+     * @param   dcPostsActions  $pa     dcPostsActions instance
+     * @param   ArrayObject     $post   _POST actions
      */
     public static function callbackRemove(dcPostsActions $pa, ArrayObject $post): void
     {
-        # No entry
+        // No entry
         $posts_ids = $pa->getIDs();
         if (empty($posts_ids)) {
             throw new Exception(__('No entry selected'));
         }
 
-        # Delete expired date
+        // Delete expired date
         foreach ($posts_ids as $post_id) {
             self::delPostExpired($post_id);
         }
@@ -217,9 +224,9 @@ class BackendBehaviors
     }
 
     /**
-     * Delete expired date
+     * Delete expired date.
      *
-     * @param  integer $post_id Post id
+     * @param   int     $post_id    Post id
      */
     private static function delPostExpired(int $post_id): void
     {
@@ -227,10 +234,10 @@ class BackendBehaviors
     }
 
     /**
-     * Save expired date
+     * Save expired date.
      *
-     * @param integer $post_id Post id
-     * @param ArrayObject   $post    _POST fields
+     * @param   int             $post_id    Post id
+     * @param   ArrayObject     $post       _POST fields
      */
     private static function setPostExpired(int $post_id, ArrayObject $post): void
     {
@@ -267,15 +274,20 @@ class BackendBehaviors
     }
 
     /**
-     * Expired date form fields
+     * Expired date form fields.
      *
      * @param   string      $post_type  Posts type
      * @param   null|int    $post_id    Post ID
      * @param   bool        $render     Render fileds to HTML
-     * @return  array             Array of object form fields
+     * @return  array   Array of object form fields
      */
     private static function fieldsPostExpired(string $post_type, ?int $post_id = null, bool $render = true): array
     {
+        // nullsafe
+        if (is_null(dcCore::app()->blog)) {
+            return [];
+        }
+
         $fields = $post_expired = [];
 
         if ($post_id) {
@@ -338,14 +350,20 @@ class BackendBehaviors
     }
 
     /**
-     * Custom categories combo
+     * Custom categories combo.
      *
-     * @param  dcRecord $categories Categories recordset
-     * @return array              Categorires combo
+     * @param   MetaRecord  $categories     Categories recordset
+     *
+     * @return  array   Categorires combo
      */
-    private static function categoriesCombo(dcRecord $categories): array
+    private static function categoriesCombo(MetaRecord $categories): array
     {
-        # Getting categories
+        // nullsafe
+        if (is_null(dcCore::app()->blog)) {
+            return [];
+        }
+
+        // Getting categories
         $categories_combo = [
             __('Not changed')   => '',
             __('Uncategorized') => '!',
@@ -369,9 +387,9 @@ class BackendBehaviors
     }
 
     /**
-     * Custom status combo
+     * Custom status combo.
      *
-     * @return array Status combo
+     * @return  array   Status combo
      */
     private static function statusCombo(): array
     {
@@ -384,9 +402,9 @@ class BackendBehaviors
     }
 
     /**
-     * Custom selection combo
+     * Custom selection combo.
      *
-     * @return array Selection combo
+     * @return  array   Selection combo
      */
     private static function selectedCombo(): array
     {
@@ -398,9 +416,9 @@ class BackendBehaviors
     }
 
     /**
-     * Custom comment status combo
+     * Custom comment status combo.
      *
-     * @return array Comment status combo
+     * @return  array   Comment status combo
      */
     private static function commentCombo(): array
     {
@@ -412,9 +430,9 @@ class BackendBehaviors
     }
 
     /**
-     * Custom trackback status combo
+     * Custom trackback status combo.
      *
-     * @return array Trackback status combo
+     * @return  array   Trackback status combo
      */
     private static function trackbackCombo(): array
     {
@@ -425,17 +443,33 @@ class BackendBehaviors
         ];
     }
 
+    /**
+     * Change a date from user timezone to UTC.
+     *
+     * @param   string  $date   The date
+     *
+     * @return  string  The UTC date
+     */
     private static function dateFromUser(string $date): string
     {
-        $d = date_create($date, new DateTimeZone(dcCore::app()->auth->getInfo('user_tz')));
+        $u = is_null(dcCore::app()->auth) ? 'UTC' : dcCore::app()->auth->getInfo('user_tz');
+        $d = date_create($date, new DateTimeZone($u));
 
         return $d ? date_format($d->setTimezone(new DateTimeZone('UTC')), 'Y-m-d H:i:00') : '';
     }
 
+    /**
+     * Change a date from UTC to user timezone.
+     *
+     * @param   string  $date   The UTC date
+     *
+     * @return  string  The date
+     */
     private static function dateToUser(string $date): string
     {
+        $u = is_null(dcCore::app()->auth) ? 'UTC' : dcCore::app()->auth->getInfo('user_tz');
         $d = date_create($date, new DateTimeZone('UTC'));
 
-        return $d ? date_format($d->setTimezone(new DateTimeZone(dcCore::app()->auth->getInfo('user_tz'))), 'Y-m-d\TH:i') : '';
+        return $d ? date_format($d->setTimezone(new DateTimeZone($u)), 'Y-m-d\TH:i') : '';
     }
 }

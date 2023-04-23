@@ -18,7 +18,7 @@ use DateTimeZone;
 use dcBlog;
 use dcCore;
 use dcMeta;
-use dcRecord;
+use Dotclear\Database\MetaRecord;
 
 /**
  * @ingroup DC_PLUGIN_POSTEXPIRED
@@ -53,7 +53,7 @@ class FrontendBehaviors
         $utc    = new DateTimeZone('UTC');
         $now_tz = (int) date_format(date_create('now', $utc), 'U');
 
-        # Prepared post cursor
+        # Prepared post Cursor
         $post_cur = dcCore::app()->con->openCursor(dcCore::app()->prefix . dcBlog::POST_TABLE_NAME);
 
         # Loop through marked posts
@@ -74,7 +74,7 @@ class FrontendBehaviors
                     My::META_TYPE
                 );
 
-                # Prepare post cursor
+                # Prepare post Cursor
                 $post_cur->clean();
                 $post_cur->setField('post_upddt', date('Y-m-d H:i:s', $now_tz));
 
@@ -87,7 +87,7 @@ class FrontendBehaviors
                     # values are prefixed by "!"
                     $v = (int) substr($v, 1);
 
-                    # Put value in post cursor
+                    # Put value in post Cursor
                     switch($k) {
                         case 'status':
                             $post_cur->setField('post_status', $v);
@@ -135,9 +135,9 @@ class FrontendBehaviors
     /**
      * Extends posts record with expired date
      *
-     * @param  dcRecord $rs Post recordset
+     * @param  MetaRecord $rs Post recordset
      */
-    public static function coreBlogGetPosts(dcRecord $rs): void
+    public static function coreBlogGetPosts(MetaRecord $rs): void
     {
         $rs->extend('rsExtPostExpired');
     }
