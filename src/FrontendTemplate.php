@@ -26,12 +26,12 @@ use dcTemplate;
 class FrontendTemplate
 {
     /**
-     * Template condition to check if there is an expired date
+     * Template condition to check if there is an expired date.
      *
-     * @param ArrayObject  $attr    Block attributes
-     * @param string $content Block content
+     * @param   ArrayObject     $attr       Block attributes
+     * @param   string          $content    Block content
      *
-     * @return string
+     * @return  string
      */
     public static function EntryExpiredIf(ArrayObject $attr, string $content): string
     {
@@ -53,11 +53,11 @@ class FrontendTemplate
     }
 
     /**
-     * Template for expired date
+     * Template for expired date.
      *
-     * @param ArrayObject $attr Value attributes
+     * @param   ArrayObject     $attr   Value attributes
      *
-     * @return string
+     * @return  string
      */
     public static function EntryExpiredDate(ArrayObject $attr): string
     {
@@ -79,11 +79,11 @@ class FrontendTemplate
     }
 
     /**
-     * Template for expired time
+     * Template for expired time.
      *
-     * @param ArrayObject $attr Value attributes
+     * @param   ArrayObject     $attr   Value attributes
      *
-     * @return string
+     * @return  string
      */
     public static function EntryExpiredTime(ArrayObject $attr): string
     {

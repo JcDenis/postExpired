@@ -16,13 +16,18 @@ namespace Dotclear\Plugin\postExpired;
 
 use dcCore;
 
+/**
+ * Module definiton shortcut.
+ */
 class My
 {
     /** @var string This plugin meta type */
     public const META_TYPE = 'post_expired';
 
     /**
-     * This module id
+     * This module id.
+     *
+     * @return  string  The module id
      */
     public static function id(): string
     {
@@ -30,7 +35,9 @@ class My
     }
 
     /**
-     * This module name
+     * This module name.
+     *
+     * @return  string  The module translated name
      */
     public static function name(): string
     {
@@ -38,13 +45,14 @@ class My
     }
 
     /**
-     * Encode Expired Date settings
+     * Encode Expired Date settings.
      *
      * This is saved into post_meta as meta_id value,
      * so this must be less than 255 caracters.
      *
-     * @param  array  $in Array of options
-     * @return string     "Serialized" options
+     * @param   array   $in     Array of options
+     *
+     * @return  string  "Serialized" options
      */
     public static function encode(array $in): string
     {
@@ -57,10 +65,11 @@ class My
     }
 
     /**
-     * Decode Expired Date settings
+     * Decode Expired Date settings.
      *
-     * @param  string $in "Serialized" options
-     * @return array      Array of options
+     * @param   string  $in     "Serialized" options
+     *
+     * @return  array   Array of options
      */
     public static function decode(string $in): array
     {
