@@ -1,3 +1,9 @@
+2023.05.13
+- require dotclear 2.26
+- fix sql statement
+- fix backend js
+- cleanup for dotclear 2.26 stable
+
 2023.04.23
 - require dotclear 2.26
 - use latest dotclear namespace
