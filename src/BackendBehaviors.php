@@ -24,10 +24,13 @@ use Dotclear\Database\{
     MetaRecord
 };
 use Dotclear\Helper\Html\Form\{
+    Checkbox,
     Datetime,
     Form,
     Hidden,
+    Input,
     Label,
+    Note,
     Option,
     Para,
     Text,
@@ -124,11 +127,15 @@ class BackendBehaviors
         self::delPostExpired($post_id);
 
         if (!empty($_POST['post_expired_date'])
-         && (!empty($_POST['post_expired_status'])
-          || !empty($_POST['post_expired_category'])
-          || !empty($_POST['post_expired_selected'])
-          || !empty($_POST['post_expired_comment'])
-          || !empty($_POST['post_expired_trackback']))) {
+            && (
+                !empty($_POST['post_expired_status'])
+                || !empty($_POST['post_expired_category'])
+                || !empty($_POST['post_expired_selected'])
+                || !empty($_POST['post_expired_comment'])
+                || !empty($_POST['post_expired_trackback'])
+                || !empty($_POST['post_expired_password'])
+            )
+        ) {
             self::setPostExpired($post_id, new ArrayObject($_POST));
         }
     }
@@ -152,13 +159,17 @@ class BackendBehaviors
             throw new Exception(__('No entry selected'));
         }
 
-        // Add epired date
+        // Add expired date
         if (!empty($post['post_expired_date'])
-         && (!empty($post['post_expired_status'])
-          || !empty($post['post_expired_category'])
-          || !empty($post['post_expired_selected'])
-          || !empty($post['post_expired_comment'])
-          || !empty($post['post_expired_trackback']))) {
+            && (
+                !empty($post['post_expired_status'])
+                || !empty($post['post_expired_category'])
+                || !empty($post['post_expired_selected'])
+                || !empty($post['post_expired_comment'])
+                || !empty($post['post_expired_trackback'])
+                || !empty($post['post_expired_password'])
+            )
+        ) {
             foreach ($posts_ids as $post_id) {
                 self::delPostExpired($post_id);
                 self::setPostExpired($post_id, $post);
@@ -242,12 +253,14 @@ class BackendBehaviors
     private static function setPostExpired(int $post_id, ArrayObject $post): void
     {
         $post_expired = [
-            'status'    => '',
-            'category'  => '',
-            'selected'  => '',
-            'comment'   => '',
-            'trackback' => '',
-            'date'      => self::dateFromUser($post['post_expired_date']),
+            'status'      => '',
+            'category'    => '',
+            'selected'    => '',
+            'comment'     => '',
+            'trackback'   => '',
+            'password'    => '',
+            'newpassword' => '',
+            'date'        => self::dateFromUser($post['post_expired_date']),
         ];
 
         if (!empty($post['post_expired_status'])) {
@@ -264,6 +277,12 @@ class BackendBehaviors
         }
         if (!empty($post['post_expired_trackback'])) {
             $post_expired['trackback'] = (string) $post['post_expired_trackback'];
+        }
+        if (!empty($post['post_expired_password'])) {
+            $post_expired['password'] = (string) $post['post_expired_password'];
+        }
+        if (!empty($post['post_expired_newpassword'])) {
+            $post_expired['newpassword'] = (string) $post['post_expired_newpassword'];
         }
 
         dcCore::app()->meta->setPostMeta(
@@ -303,20 +322,20 @@ class BackendBehaviors
         }
 
         $fields['post_expired_date'] = (new Para())->items([
-            (new Label(__('Date:')))->for('post_expired_date'),
+            (new Label(__('Date:'), Label::OUTSIDE_LABEL_BEFORE))->for('post_expired_date'),
             (new Datetime('post_expired_date', Html::escapeHTML(self::dateToUser($post_expired['date'] ?? 'now'))))->class(empty($post_expired['date']) ? 'invalid' : ''),
         ]);
 
         $fields['post_expired_status'] = (new Para())->items([
             (new Text('strong', __('On this date, change:'))),
             (new Text('br')),
-            (new Label(__('Status:')))->for('post_expired_status'),
+            (new Label(__('Status:'), Label::OUTSIDE_LABEL_BEFORE))->for('post_expired_status'),
             (new Select('post_expired_status'))->default(empty($post_expired['status']) ? '' : $post_expired['status'])->items(self::statusCombo()),
         ]);
 
         if ($post_type == 'post') {
             $fields['post_expired_category'] = (new Para())->items([
-                (new Label(__('Category:')))->for('post_expired_category'),
+                (new Label(__('Category:'), Label::OUTSIDE_LABEL_BEFORE))->for('post_expired_category'),
                 (new Select('post_expired_category'))->default(empty($post_expired['category']) ? '' : $post_expired['category'])->items(self::categoriesCombo(
                     dcCore::app()->blog->getCategories(
                         ['post_type' => 'post']
@@ -325,19 +344,27 @@ class BackendBehaviors
             ]);
 
             $fields['post_expired_selected'] = (new Para())->items([
-                (new Label(__('Selection:')))->for('post_expired_selected'),
+                (new Label(__('Selection:'), Label::OUTSIDE_LABEL_BEFORE))->for('post_expired_selected'),
                 (new Select('post_expired_selected'))->default(empty($post_expired['selected']) ? '' : $post_expired['selected'])->items(self::selectedCombo()),
             ]);
         }
 
         $fields['post_expired_comment'] = (new Para())->items([
-            (new Label(__('Comments status:')))->for('post_expired_comment'),
+            (new Label(__('Comments status:'), Label::OUTSIDE_LABEL_BEFORE))->for('post_expired_comment'),
             (new Select('post_expired_comment'))->default(empty($post_expired['comment']) ? '' : $post_expired['comment'])->items(self::commentCombo()),
         ]);
 
         $fields['post_expired_trackback'] = (new Para())->items([
-            (new Label(__('Trackbacks status:')))->for('post_expired_trackback'),
+            (new Label(__('Trackbacks status:'), Label::OUTSIDE_LABEL_BEFORE))->for('post_expired_trackback'),
             (new Select('post_expired_trackback'))->default(empty($post_expired['trackback']) ? '' : $post_expired['trackback'])->items(self::trackbackCombo()),
+        ]);
+
+        $fields['post_expired_password'] = (new Para())->items([
+            (new Checkbox('post_expired_password', !empty($post_expired['password'])))->value(1),
+            (new Label(__('Change password'), Label::OUTSIDE_LABEL_AFTER))->for('post_expired_password')->class('classic'),
+            (new Label(__('New password:'), Label::OUTSIDE_LABEL_BEFORE))->for('post_expired_newpassword'),
+            (new Input('post_expired_newpassword'))->size(65)->maxlenght(255)->class('maximal')->value(empty($post_expired['newpassword']) ? '' : $post_expired['newpassword']),
+            (new Note())->text(__('Leave empty to remove it'))->class('form-note'),
         ]);
 
         if ($render) {

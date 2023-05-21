@@ -129,6 +129,11 @@ class FrontendBehaviors
                             $post_cur->setField('post_open_tb', $v);
 
                             break;
+
+                        case 'password':
+                            $post_cur->setField('post_password', empty($post_expired['newpassword']) ? '' : $post_expired['newpassword']);
+
+                            break;
                     }
                 }
 
