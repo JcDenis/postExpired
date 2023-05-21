@@ -12,6 +12,6 @@ $(() => {
   }
   $('#post_expired h4').toggleWithLegend(
   	$('#post_expired').children().not('h4'),
-	{cookie:'dcx_postexpired_admin_form_sidebar',legend_click:true}
+	{user_pref:'dcx_postexpired_admin_form_sidebar',legend_click:true}
   );
 });
