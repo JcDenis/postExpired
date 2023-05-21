@@ -1,3 +1,8 @@
+2023.05.21
+- require dotclear 2.26
+- fix sidebar menu toggle
+- add ability to change password
+
 2023.05.13
 - require dotclear 2.26
 - fix sql statement

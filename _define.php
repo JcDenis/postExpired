@@ -18,7 +18,7 @@ $this->registerModule(
     'Expired entries',
     'Change entries options at a given date',
     'Jean-Christian Denis and Contributors',
-    '2023.05.13',
+    '2023.05.21',
     [
         'requires'    => [['core', '2.26']],
         'permissions' => dcCore::app()->auth->makePermissions([
