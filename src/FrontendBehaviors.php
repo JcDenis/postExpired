@@ -34,13 +34,8 @@ class FrontendBehaviors
     /**
      * Check if there are expired dates.
      */
-    public static function publicBeforeDocument(): void
+    public static function publicBeforeDocumentV2(): void
     {
-        // nullsafe
-        if (is_null(dcCore::app()->auth) || is_null(dcCore::app()->blog)) {
-            return;
-        }
-
         // Get expired dates and post_id
         $sql   = new SelectStatement();
         $posts = $sql->from($sql->as(dcCore::app()->prefix . dcBlog::POST_TABLE_NAME, 'P'))

@@ -1,3 +1,8 @@
+2023.07.30
+- require Dotclear 2.27
+- require PHP 7.4+
+- update to Dotclear 2.27-dev
+
 2023.05.21
 - require dotclear 2.26
 - fix sidebar menu toggle

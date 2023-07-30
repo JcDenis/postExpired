@@ -15,28 +15,18 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\postExpired;
 
 use dcCore;
-use dcNsProcess;
+use Dotclear\Core\Process;
 
-class Backend extends dcNsProcess
+class Backend extends Process
 {
     public static function init(): bool
     {
-        static::$init = defined('DC_CONTEXT_ADMIN')
-            && !is_null(dcCore::app()->auth) && !is_null(dcCore::app()->blog)
-            && dcCore::app()->auth->check(
-                dcCore::app()->auth->makePermissions(
-                    [
-                        dcCore::app()->auth::PERMISSION_CONTENT_ADMIN]
-                ),
-                dcCore::app()->blog->id
-            );
-
-        return static::$init;
+        return self::status(My::checkContext(My::BACKEND));
     }
 
     public static function process(): bool
     {
-        if (!static::$init) {
+        if (!self::status()) {
             return false;
         }
 

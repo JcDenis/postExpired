@@ -17,6 +17,7 @@ namespace Dotclear\Plugin\postExpired;
 use ArrayObject;
 use dcCore;
 use dcTemplate;
+use Dotclear\Helper\Date;
 
 /**
  * @ingroup DC_PLUGIN_POSTEXPIRED
@@ -66,13 +67,13 @@ class FrontendTemplate
         $f = dcCore::app()->tpl->getFilters($attr);
 
         if (!empty($attr['rfc822'])) {
-            $res = sprintf($f, 'dt::rfc822(strtotime(dcCore::app()->ctx->posts->postExpiredDate()),dcCore::app()->ctx->posts->post_tz)');
+            $res = sprintf($f, Date::class . '::rfc822(strtotime(dcCore::app()->ctx->posts->postExpiredDate()),dcCore::app()->ctx->posts->post_tz)');
         } elseif (!empty($attr['iso8601'])) {
-            $res = sprintf($f, 'dt::iso8601(strtotime(dcCore::app()->ctx->posts->postExpiredDate(),dcCore::app()->ctx->posts->post_tz)');
+            $res = sprintf($f, Date::class . '::iso8601(strtotime(dcCore::app()->ctx->posts->postExpiredDate(),dcCore::app()->ctx->posts->post_tz)');
         } elseif ($format) {
-            $res = sprintf($f, "dt::dt2str('" . $format . "',dcCore::app()->ctx->posts->postExpiredDate())");
+            $res = sprintf($f, Date::class . "::dt2str('" . $format . "',dcCore::app()->ctx->posts->postExpiredDate())");
         } else {
-            $res = sprintf($f, 'dt::dt2str(dcCore::app()->blog->settings->system->date_format,dcCore::app()->ctx->posts->postExpiredDate())');
+            $res = sprintf($f, Date::class . '::dt2str(dcCore::app()->blog->settings->system->date_format,dcCore::app()->ctx->posts->postExpiredDate())');
         }
 
         return '<?php if (null !== dcCore::app()->ctx->posts->postExpiredDate()) { echo ' . $res . '; } ?>';
@@ -90,7 +91,7 @@ class FrontendTemplate
         return
         '<?php if (null !== dcCore::app()->ctx->posts->postExpiredDate()) { echo ' . sprintf(
             dcCore::app()->tpl->getFilters($attr),
-            'dt::dt2str(' .
+            Date::class . '::dt2str(' .
             (
                 !empty($attr['format']) ?
                 "'" . addslashes($attr['format']) . "'" : 'dcCore::app()->blog->settings->system->time_format'

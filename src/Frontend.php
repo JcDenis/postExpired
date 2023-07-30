@@ -15,20 +15,18 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\postExpired;
 
 use dcCore;
-use dcNsProcess;
+use Dotclear\Core\Process;
 
-class Frontend extends dcNsProcess
+class Frontend extends Process
 {
     public static function init(): bool
     {
-        static::$init = true;
-
-        return static::$init;
+        return self::status(My::checkContext(My::FRONTEND));
     }
 
     public static function process(): bool
     {
-        if (!static::$init) {
+        if (!self::status()) {
             return false;
         }
 
@@ -40,7 +38,7 @@ class Frontend extends dcNsProcess
         if (in_array(dcCore::app()->url->type, ['default', 'feed'])) {
             dcCore::app()->addBehavior(
                 'publicBeforeDocumentV2',
-                [FrontendBehaviors::class, 'publicBeforeDocument']
+                [FrontendBehaviors::class, 'publicBeforeDocumentV2']
             );
         }
         dcCore::app()->addBehavior(

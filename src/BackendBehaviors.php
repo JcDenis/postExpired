@@ -17,8 +17,11 @@ namespace Dotclear\Plugin\postExpired;
 use ArrayObject;
 use DateTimeZone;
 use dcCore;
-use dcPostsActions;
-use dcPage;
+use Dotclear\Core\Backend\Action\ActionsPosts;
+use Dotclear\Core\Backend\{
+    Notices,
+    Page
+};
 use Dotclear\Database\{
     Cursor,
     MetaRecord
@@ -50,9 +53,9 @@ class BackendBehaviors
     /**
      * Add actions to posts page combo.
      *
-     * @param   dcPostsActions  $pa     dcPostsActions instance
+     * @param   ActionsPosts    $pa     ActionsPosts instance
      */
-    public static function adminPostsActions(dcPostsActions $pa): void
+    public static function adminPostsActions(ActionsPosts $pa): void
     {
         $pa->addAction(
             [
@@ -80,7 +83,7 @@ class BackendBehaviors
      */
     public static function adminPostHeaders(): string
     {
-        return dcPage::jsModuleLoad(My::id() . '/js/backend.js');
+        return My::jsLoad('backend');
     }
 
     /**
@@ -143,16 +146,11 @@ class BackendBehaviors
     /**
      * Posts actions callback to add expired date.
      *
-     * @param   dcPostsActions  $pa     dcPostsActions instance
+     * @param   ActionsPosts    $pa     ActionsPosts instance
      * @param   ArrayObject     $post   _POST actions
      */
-    public static function callbackAdd(dcPostsActions $pa, ArrayObject $post): void
+    public static function callbackAdd(ActionsPosts $pa, ArrayObject $post): void
     {
-        // nullsafe
-        if (is_null(dcCore::app()->blog)) {
-            return;
-        }
-
         // No entry
         $posts_ids = $pa->getIDs();
         if (empty($posts_ids)) {
@@ -175,7 +173,7 @@ class BackendBehaviors
                 self::setPostExpired($post_id, $post);
             }
 
-            dcPage::addSuccessNotice(__('Expired date added.'));
+            Notices::addSuccessNotice(__('Expired date added.'));
             $pa->redirect(true);
 
         // Display form
@@ -184,27 +182,25 @@ class BackendBehaviors
             $posts = $pa->getRS();
 
             $pa->beginPage(
-                dcPage::breadcrumb([
+                Page::breadcrumb([
                     Html::escapeHTML(dcCore::app()->blog->name) => '',
                     $pa->getCallerTitle()                       => $pa->getRedirection(true),
                     __('Add expired date to this selection')    => '',
                 ]),
-                //dcPage::jsDatePicker() .
+                //Page::jsDatePicker() .
                 self::adminPostHeaders()
             );
 
             echo
             (new Form('peadd'))->method('post')->action($pa->getURI())->fields([
                 (new Text('', $pa->getCheckboxes())),
-                (new Para())->items(array_merge(
-                    self::fieldsPostExpired($posts->f('post_type'), null, false),
-                    $pa->hiddenFields(),
-                    [
-                        dcCore::app()->formNonce(false),
-                        (new Hidden(['action'], 'post_expired_add')),
-                        (new Submit(['do']))->value(__('Save')),
-                    ],
-                )),
+                (new Para())->items([
+                    ... self::fieldsPostExpired($posts->f('post_type'), null, false),
+                    ... $pa->hiddenFields(),
+                    dcCore::app()->formNonce(false),
+                    (new Hidden(['action'], 'post_expired_add')),
+                    (new Submit(['do']))->value(__('Save')),
+                ]),
             ])->render();
 
             $pa->endPage();
@@ -214,10 +210,10 @@ class BackendBehaviors
     /**
      * Posts actions callback to add expired date.
      *
-     * @param   dcPostsActions  $pa     dcPostsActions instance
+     * @param   ActionsPosts    $pa     ActionsPosts instance
      * @param   ArrayObject     $post   _POST actions
      */
-    public static function callbackRemove(dcPostsActions $pa, ArrayObject $post): void
+    public static function callbackRemove(ActionsPosts $pa, ArrayObject $post): void
     {
         // No entry
         $posts_ids = $pa->getIDs();
@@ -230,7 +226,7 @@ class BackendBehaviors
             self::delPostExpired($post_id);
         }
 
-        dcPage::addSuccessNotice(__('Expired date deleted.'));
+        Notices::addSuccessNotice(__('Expired date deleted.'));
         $pa->redirect(true);
     }
 
@@ -302,11 +298,6 @@ class BackendBehaviors
      */
     private static function fieldsPostExpired(string $post_type, ?int $post_id = null, bool $render = true): array
     {
-        // nullsafe
-        if (is_null(dcCore::app()->blog)) {
-            return [];
-        }
-
         $fields = $post_expired = [];
 
         if ($post_id) {
@@ -385,11 +376,6 @@ class BackendBehaviors
      */
     private static function categoriesCombo(MetaRecord $categories): array
     {
-        // nullsafe
-        if (is_null(dcCore::app()->blog)) {
-            return [];
-        }
-
         // Getting categories
         $categories_combo = [
             __('Not changed')   => '',
@@ -479,7 +465,7 @@ class BackendBehaviors
      */
     private static function dateFromUser(string $date): string
     {
-        $u = is_null(dcCore::app()->auth) ? 'UTC' : dcCore::app()->auth->getInfo('user_tz');
+        $u = !isset(dcCore::app()->auth) ? 'UTC' : dcCore::app()->auth->getInfo('user_tz');
         $d = date_create($date, new DateTimeZone($u));
 
         return $d ? date_format($d->setTimezone(new DateTimeZone('UTC')), 'Y-m-d H:i:00') : '';
@@ -494,7 +480,7 @@ class BackendBehaviors
      */
     private static function dateToUser(string $date): string
     {
-        $u = is_null(dcCore::app()->auth) ? 'UTC' : dcCore::app()->auth->getInfo('user_tz');
+        $u = !isset(dcCore::app()->auth) ? 'UTC' : dcCore::app()->auth->getInfo('user_tz');
         $d = date_create($date, new DateTimeZone('UTC'));
 
         return $d ? date_format($d->setTimezone(new DateTimeZone($u)), 'Y-m-d\TH:i') : '';
