@@ -176,7 +176,7 @@ class BackendBehaviors
             Notices::addSuccessNotice(__('Expired date added.'));
             $pa->redirect(true);
 
-        // Display form
+            // Display form
         } else {
             // Get records to know post type
             $posts = $pa->getRS();
