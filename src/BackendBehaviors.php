@@ -1,22 +1,12 @@
 <?php
-/**
- * @brief postExpired, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and Contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\postExpired;
 
 use ArrayObject;
 use DateTimeZone;
-use dcCore;
+use Dotclear\App;
 use Dotclear\Core\Backend\Action\ActionsPosts;
 use Dotclear\Core\Backend\{
     Notices,
@@ -44,9 +34,11 @@ use Dotclear\Helper\Html\Html;
 use Exception;
 
 /**
- * @ingroup DC_PLUGIN_POSTEXPIRED
- * @brief Scheduled post change - admin methods.
- * @since 2.6
+ * @brief       postExpired backend behaviors class.
+ * @ingroup     postExpired
+ *
+ * @author      Jean-Christian Denis
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 class BackendBehaviors
 {
@@ -63,7 +55,7 @@ class BackendBehaviors
                     __('Add expired date') => 'post_expired_add',
                 ],
             ],
-            [self::class, 'callbackAdd']
+            self::callbackAdd(...)
         );
 
         $pa->addAction(
@@ -72,7 +64,7 @@ class BackendBehaviors
                     __('Remove expired date') => 'post_expired_remove',
                 ],
             ],
-            [self::class, 'callbackRemove']
+            self::callbackRemove(...)
         );
     }
 
@@ -183,9 +175,9 @@ class BackendBehaviors
 
             $pa->beginPage(
                 Page::breadcrumb([
-                    Html::escapeHTML(dcCore::app()->blog->name) => '',
-                    $pa->getCallerTitle()                       => $pa->getRedirection(true),
-                    __('Add expired date to this selection')    => '',
+                    Html::escapeHTML(App::blog()->name())    => '',
+                    $pa->getCallerTitle()                    => $pa->getRedirection(true),
+                    __('Add expired date to this selection') => '',
                 ]),
                 //Page::jsDatePicker() .
                 self::adminPostHeaders()
@@ -197,7 +189,7 @@ class BackendBehaviors
                 (new Para())->items([
                     ... self::fieldsPostExpired($posts->f('post_type'), null, false),
                     ... $pa->hiddenFields(),
-                    dcCore::app()->formNonce(false),
+                    App::nonce()->formNonce(),
                     (new Hidden(['action'], 'post_expired_add')),
                     (new Submit(['do']))->value(__('Save')),
                 ]),
@@ -237,7 +229,7 @@ class BackendBehaviors
      */
     private static function delPostExpired(int $post_id): void
     {
-        dcCore::app()->meta->delPostMeta($post_id, My::META_TYPE);
+        App::meta()->delPostMeta($post_id, My::META_TYPE);
     }
 
     /**
@@ -281,7 +273,7 @@ class BackendBehaviors
             $post_expired['newpassword'] = (string) $post['post_expired_newpassword'];
         }
 
-        dcCore::app()->meta->setPostMeta(
+        App::meta()->setPostMeta(
             $post_id,
             My::META_TYPE,
             My::encode($post_expired)
@@ -301,7 +293,7 @@ class BackendBehaviors
         $fields = $post_expired = [];
 
         if ($post_id) {
-            $rs = dcCore::app()->meta->getMetadata([
+            $rs = App::meta()->getMetadata([
                 'meta_type' => My::META_TYPE,
                 'post_id'   => $post_id,
                 'limit'     => 1,
@@ -328,7 +320,7 @@ class BackendBehaviors
             $fields['post_expired_category'] = (new Para())->items([
                 (new Label(__('Category:'), Label::OUTSIDE_LABEL_BEFORE))->for('post_expired_category'),
                 (new Select('post_expired_category'))->default(empty($post_expired['category']) ? '' : $post_expired['category'])->items(self::categoriesCombo(
-                    dcCore::app()->blog->getCategories(
+                    App::blog()->getCategories(
                         ['post_type' => 'post']
                     )
                 )),
@@ -383,7 +375,7 @@ class BackendBehaviors
         ];
 
         try {
-            $categories = dcCore::app()->blog->getCategories(
+            $categories = App::blog()->getCategories(
                 ['post_type' => 'post']
             );
             while ($categories->fetch()) {
@@ -465,7 +457,7 @@ class BackendBehaviors
      */
     private static function dateFromUser(string $date): string
     {
-        $u = !isset(dcCore::app()->auth) ? 'UTC' : dcCore::app()->auth->getInfo('user_tz');
+        $u = App::auth()->getInfo('user_tz') ?? 'UTC';
         $d = date_create($date, new DateTimeZone($u));
 
         return $d ? date_format($d->setTimezone(new DateTimeZone('UTC')), 'Y-m-d H:i:00') : '';
@@ -480,7 +472,7 @@ class BackendBehaviors
      */
     private static function dateToUser(string $date): string
     {
-        $u = !isset(dcCore::app()->auth) ? 'UTC' : dcCore::app()->auth->getInfo('user_tz');
+        $u = App::auth()->getInfo('user_tz') ?? 'UTC';
         $d = date_create($date, new DateTimeZone('UTC'));
 
         return $d ? date_format($d->setTimezone(new DateTimeZone($u)), 'Y-m-d\TH:i') : '';

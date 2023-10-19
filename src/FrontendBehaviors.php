@@ -1,23 +1,11 @@
 <?php
-/**
- * @brief postExpired, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and Contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\postExpired;
 
 use DateTimeZone;
-use dcBlog;
-use dcCore;
-use dcMeta;
+use Dotclear\App;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Database\Statement\{
     JoinStatement,
@@ -25,9 +13,11 @@ use Dotclear\Database\Statement\{
 };
 
 /**
- * @ingroup DC_PLUGIN_POSTEXPIRED
- * @brief Scheduled post change - public methods.
- * @since 2.6
+ * @brief       postExpired frontend behaviors class.
+ * @ingroup     postExpired
+ *
+ * @author      Jean-Christian Denis
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 class FrontendBehaviors
 {
@@ -38,7 +28,7 @@ class FrontendBehaviors
     {
         // Get expired dates and post_id
         $sql   = new SelectStatement();
-        $posts = $sql->from($sql->as(dcCore::app()->prefix . dcBlog::POST_TABLE_NAME, 'P'))
+        $posts = $sql->from($sql->as(App::con()->prefix() . App::blog()::POST_TABLE_NAME, 'P'))
             ->columns([
                 'P.post_id',
                 'P.post_tz',
@@ -47,11 +37,11 @@ class FrontendBehaviors
             ->join(
                 (new JoinStatement())
                     ->inner()
-                    ->from($sql->as(dcCore::app()->prefix . dcMeta::META_TABLE_NAME, 'META'))
+                    ->from($sql->as(App::con()->prefix() . App::meta()::META_TABLE_NAME, 'META'))
                     ->on('META.post_id = P.post_id')
                     ->statement()
             )
-            ->where('blog_id = ' . $sql->quote((string) dcCore::app()->blog->id))
+            ->where('blog_id = ' . $sql->quote(App::blog()->id()))
             ->and('META.meta_type = ' . $sql->quote(My::META_TYPE))
             ->select();
 
@@ -65,7 +55,7 @@ class FrontendBehaviors
         $now_tz = (int) date_format(date_create('now', $utc), 'U');
 
         // Prepared post Cursor
-        $post_cur = dcCore::app()->con->openCursor(dcCore::app()->prefix . dcBlog::POST_TABLE_NAME);
+        $post_cur = App::blog()->openPostCursor();
 
         // Loop through marked posts
         $updated = false;
@@ -79,8 +69,8 @@ class FrontendBehaviors
 
             if ($now_tz > $meta_tz) {
                 // Delete meta for expired date
-                dcCore::app()->auth->sudo(
-                    [dcCore::app()->meta, 'delPostMeta'],
+                App::auth()->sudo(
+                    App::meta()->delPostMeta(...),
                     $posts->f('post_id'),
                     My::META_TYPE
                 );
@@ -135,7 +125,7 @@ class FrontendBehaviors
                 // Update post
                 $post_cur->update(
                     'WHERE post_id = ' . $posts->f('post_id') . ' ' .
-                    "AND blog_id = '" . dcCore::app()->con->escapeStr((string) dcCore::app()->blog->id) . "' "
+                    "AND blog_id = '" . App::con()->escapeStr(App::blog()->id()) . "' "
                 );
 
                 $updated = true;
@@ -144,7 +134,7 @@ class FrontendBehaviors
 
         // Say blog is updated
         if ($updated) {
-            dcCore::app()->blog->triggerBlog();
+            App::blog()->triggerBlog();
         }
     }
 
@@ -155,6 +145,6 @@ class FrontendBehaviors
      */
     public static function coreBlogGetPosts(MetaRecord $rs): void
     {
-        $rs->extend('rsExtPostExpired');
+        $rs->extend(rsExtPostExpired::class);
     }
 }

@@ -1,26 +1,23 @@
 # README
 
 [![Release](https://img.shields.io/badge/release-2023.08.13-a2cbe9.svg)](https://git.dotclear.watch/JcDenis/postExpired/releases)
-[![Date](https://img.shields.io/badge/date-2023.08.13-c44d58.svg)](https://git.dotclear.watch/JcDenis/postExpired/releases)
+![Date](https://img.shields.io/badge/date-2023.08.13-c44d58.svg)
 [![Dotclear](https://img.shields.io/badge/dotclear-v2.27-137bbb.svg)](https://fr.dotclear.org/download)
 [![Dotaddict](https://img.shields.io/badge/dotaddict-official-9ac123.svg)](https://plugins.dotaddict.org/dc2/details/postExpired)
-[![License](https://img.shields.io/github/license/JcDenis/postExpired)](https://git.dotclear.watch/JcDenis/postExpired/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/license-GPL--2.0-ececec.svg)](https://git.dotclear.watch/JcDenis/postExpired/src/branch/master/LICENSE)
 
-## WHAT IS POSTEXPIRED ?
+## ABOUT
 
-Post expired is a plugin for the open-source 
-web publishing software called Dotclear.
+_postExpired_ is a plugin for the open-source web publishing software called [Dotclear](https://www.dotclear.org).
 
-It add options to the sidebar of post edition page 
+> Add options to the sidebar of post edition page 
 to change some options of a post at a given time.
 
 ## REQUIREMENTS
 
-_postExpired_ requires: 
-
-* contentadmin permissions
-* Dotclear 2.27
-* PHP 7.4+
+* Dotclear 2.28
+* PHP 8.1+
+* Dotclear contentadmin permissions
 
 ## USAGE
 
@@ -39,13 +36,14 @@ Notes:
 
 ## LINKS
 
-* License : [GNU GPL v2](https://www.gnu.org/licenses/old-licenses/lgpl-2.0.html)
-* Source & contribution : [Gitea Page](https://git.dotclear.watch/JcDenis/postExpired) or [GitHub Page](https://github.com/JcDenis/postExpired)
-* Packages & details: [Gitea Page](https://git.dotclear.watch/JcDenis/postExpired/releases) or [Dotaddict Page](https://plugins.dotaddict.org/dc2/details/postExpired)
-* Discuss & help : [Dotclear Forum](https://forum.dotclear.org/viewtopic.php?id=42305)
+* [License](https://git.dotclear.watch/JcDenis/postExpired/src/branch/master/LICENSE)
+* [Packages & details](https://git.dotclear.watch/JcDenis/postExpired/releases) (or on [Dotaddict](https://plugins.dotaddict.org/dc2/details/postExpired))
+* [Sources & contributions](https://git.dotclear.watch/JcDenis/postExpired) (or on [GitHub](https://github.com/JcDenis/postExpired))
+* [Issues & security](https://git.dotclear.watch/JcDenis/postExpired/issues) (or on [GitHub](https://github.com/JcDenis/postExpired/issues))
+* [Discuss & help](https://forum.dotclear.org/viewtopic.php?id=42305)
 
 ## CONTRIBUTORS
 
-* Jean-Christian Denis
+* Jean-Christian Denis (author)
 
 You are welcome to contribute to this code.

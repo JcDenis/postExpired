@@ -1,22 +1,19 @@
 <?php
-/**
- * @brief postExpired, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and Contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\postExpired;
 
-use dcCore;
+use Dotclear\App;
 use Dotclear\Core\Process;
 
+/**
+ * @brief       postExpired frontend class.
+ * @ingroup     postExpired
+ *
+ * @author      Jean-Christian Denis
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 class Frontend extends Process
 {
     public static function init(): bool
@@ -35,27 +32,27 @@ class Frontend extends Process
         __('This entry has no expiration date');
 
         # launch update only on public home page and feed
-        if (in_array(dcCore::app()->url->type, ['default', 'feed'])) {
-            dcCore::app()->addBehavior(
+        if (in_array(App::url()->type, ['default', 'feed'])) {
+            App::behavior()->addBehavior(
                 'publicBeforeDocumentV2',
-                [FrontendBehaviors::class, 'publicBeforeDocumentV2']
+                FrontendBehaviors::publicBeforeDocumentV2(...)
             );
         }
-        dcCore::app()->addBehavior(
+        App::behavior()->addBehavior(
             'coreBlogGetPosts',
-            [FrontendBehaviors::class, 'coreBlogGetPosts']
+            FrontendBehaviors::coreBlogGetPosts(...)
         );
-        dcCore::app()->tpl->addBlock(
+        App::frontend()->template()->addBlock(
             'EntryExpiredIf',
-            [FrontendTemplate::class, 'EntryExpiredIf']
+            FrontendTemplate::EntryExpiredIf(...)
         );
-        dcCore::app()->tpl->addValue(
+        App::frontend()->template()->addValue(
             'EntryExpiredDate',
-            [FrontendTemplate::class, 'EntryExpiredDate']
+            FrontendTemplate::EntryExpiredDate(...)
         );
-        dcCore::app()->tpl->addValue(
+        App::frontend()->template()->addValue(
             'EntryExpiredTime',
-            [FrontendTemplate::class, 'EntryExpiredTime']
+            FrontendTemplate::EntryExpiredTime(...)
         );
 
         return true;

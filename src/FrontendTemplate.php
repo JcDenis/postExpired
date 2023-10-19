@@ -1,28 +1,19 @@
 <?php
-/**
- * @brief postExpired, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and Contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\postExpired;
 
 use ArrayObject;
-use dcCore;
-use dcTemplate;
+use Dotclear\App;
 use Dotclear\Helper\Date;
 
 /**
- * @ingroup DC_PLUGIN_POSTEXPIRED
- * @brief Scheduled post change - template methods.
- * @since 2.6
+ * @brief       postExpired frontend template class.
+ * @ingroup     postExpired
+ *
+ * @author      Jean-Christian Denis
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 class FrontendTemplate
 {
@@ -38,13 +29,13 @@ class FrontendTemplate
     {
         $if       = [];
         $operator = isset($attr['operator']) ?
-            dcTemplate::getOperator($attr['operator']) : '&&';
+            App::frontend()->template()->getOperator($attr['operator']) : '&&';
 
         if (isset($attr['has_date'])) {
             $sign = (bool) $attr['has_date'] ? '!' : '=';
-            $if[] = '(null ' . $sign . '== dcCore::app()->ctx->posts->postExpiredDate())';
+            $if[] = '(null ' . $sign . '== App::frontend()->context()->posts->postExpiredDate())';
         } else {
-            $if[] = '(null !== dcCore::app()->ctx->posts->postExpiredDate())';
+            $if[] = '(null !== App::frontend()->context()->posts->postExpiredDate())';
         }
 
         return
@@ -64,19 +55,19 @@ class FrontendTemplate
     {
         $format = !empty($attr['format']) ?
             addslashes($attr['format']) : '';
-        $f = dcCore::app()->tpl->getFilters($attr);
+        $f = App::frontend()->template()->getFilters($attr);
 
         if (!empty($attr['rfc822'])) {
-            $res = sprintf($f, Date::class . '::rfc822(strtotime(dcCore::app()->ctx->posts->postExpiredDate()),dcCore::app()->ctx->posts->post_tz)');
+            $res = sprintf($f, Date::class . '::rfc822(strtotime(App::frontend()->context()->posts->postExpiredDate()),App::frontend()->context()->posts->post_tz)');
         } elseif (!empty($attr['iso8601'])) {
-            $res = sprintf($f, Date::class . '::iso8601(strtotime(dcCore::app()->ctx->posts->postExpiredDate(),dcCore::app()->ctx->posts->post_tz)');
+            $res = sprintf($f, Date::class . '::iso8601(strtotime(App::frontend()->context()->posts->postExpiredDate(),App::frontend()->context()->posts->post_tz)');
         } elseif ($format) {
-            $res = sprintf($f, Date::class . "::dt2str('" . $format . "',dcCore::app()->ctx->posts->postExpiredDate())");
+            $res = sprintf($f, Date::class . "::dt2str('" . $format . "',App::frontend()->context()->posts->postExpiredDate())");
         } else {
-            $res = sprintf($f, Date::class . '::dt2str(dcCore::app()->blog->settings->system->date_format,dcCore::app()->ctx->posts->postExpiredDate())');
+            $res = sprintf($f, Date::class . '::dt2str(App::blog()->settings()->system->date_format,App::frontend()->context()->posts->postExpiredDate())');
         }
 
-        return '<?php if (null !== dcCore::app()->ctx->posts->postExpiredDate()) { echo ' . $res . '; } ?>';
+        return '<?php if (null !== App::frontend()->context()->posts->postExpiredDate()) { echo ' . $res . '; } ?>';
     }
 
     /**
@@ -89,13 +80,13 @@ class FrontendTemplate
     public static function EntryExpiredTime(ArrayObject $attr): string
     {
         return
-        '<?php if (null !== dcCore::app()->ctx->posts->postExpiredDate()) { echo ' . sprintf(
-            dcCore::app()->tpl->getFilters($attr),
+        '<?php if (null !== App::frontend()->context()->posts->postExpiredDate()) { echo ' . sprintf(
+            App::frontend()->template()->getFilters($attr),
             Date::class . '::dt2str(' .
             (
                 !empty($attr['format']) ?
-                "'" . addslashes($attr['format']) . "'" : 'dcCore::app()->blog->settings->system->time_format'
-            ) . ',dcCore::app()->ctx->posts->postExpiredDate())'
+                "'" . addslashes($attr['format']) . "'" : 'App::blog()->settings()->system->time_format'
+            ) . ',App::frontend()->context()->posts->postExpiredDate())'
         ) . '; } ?>';
     }
 }

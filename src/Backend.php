@@ -1,22 +1,19 @@
 <?php
-/**
- * @brief postExpired, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and Contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\postExpired;
 
-use dcCore;
+use Dotclear\App;
 use Dotclear\Core\Process;
 
+/**
+ * @brief       postExpired backend class.
+ * @ingroup     postExpired
+ *
+ * @author      Jean-Christian Denis
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 class Backend extends Process
 {
     public static function init(): bool
@@ -30,19 +27,19 @@ class Backend extends Process
             return false;
         }
 
-        dcCore::app()->addBehaviors([
-            'adminPostsActions'     => [BackendBehaviors::class, 'adminPostsActions'],
-            'adminPagesActions'     => [BackendBehaviors::class, 'adminPostsActions'],
-            'adminPostHeaders'      => [BackendBehaviors::class, 'adminPostHeaders'],
-            'adminPageHeaders'      => [BackendBehaviors::class, 'adminPostHeaders'],
-            'adminPostFormItems'    => [BackendBehaviors::class, 'adminPostFormItems'],
-            'adminPageFormItems'    => [BackendBehaviors::class, 'adminPostFormItems'],
-            'adminBeforePostDelete' => [BackendBehaviors::class, 'adminBeforePostDelete'],
-            'adminBeforePageDelete' => [BackendBehaviors::class, 'adminBeforePostDelete'],
-            'adminAfterPostUpdate'  => [BackendBehaviors::class, 'adminAfterPostSave'],
-            'adminAfterPageUpdate'  => [BackendBehaviors::class, 'adminAfterPostSave'],
-            'adminAfterPostCreate'  => [BackendBehaviors::class, 'adminAfterPostSave'],
-            'adminAfterPageCreate'  => [BackendBehaviors::class, 'adminAfterPostSave'],
+        App::behavior()->addBehaviors([
+            'adminPostsActions'     => BackendBehaviors::adminPostsActions(...),
+            'adminPagesActions'     => BackendBehaviors::adminPostsActions(...),
+            'adminPostHeaders'      => BackendBehaviors::adminPostHeaders(...),
+            'adminPageHeaders'      => BackendBehaviors::adminPostHeaders(...),
+            'adminPostFormItems'    => BackendBehaviors::adminPostFormItems(...),
+            'adminPageFormItems'    => BackendBehaviors::adminPostFormItems(...),
+            'adminBeforePostDelete' => BackendBehaviors::adminBeforePostDelete(...),
+            'adminBeforePageDelete' => BackendBehaviors::adminBeforePostDelete(...),
+            'adminAfterPostUpdate'  => BackendBehaviors::adminAfterPostSave(...),
+            'adminAfterPageUpdate'  => BackendBehaviors::adminAfterPostSave(...),
+            'adminAfterPostCreate'  => BackendBehaviors::adminAfterPostSave(...),
+            'adminAfterPageCreate'  => BackendBehaviors::adminAfterPostSave(...),
         ]);
 
         return true;
