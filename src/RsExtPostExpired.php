@@ -17,7 +17,11 @@ use Dotclear\Schema\Extension\Post;
  */
 class rsExtPostExpired extends Post
 {
-    /** @var    array   $memory     Memory to prevent redondant call */
+    /**
+     * Memory to prevent redondant call.
+     *
+     * @var     array<string, string>   $memory
+     */
     protected static array $memory = [];
 
     /**
@@ -40,8 +44,8 @@ class rsExtPostExpired extends Post
                 return '';
             }
 
-            $v                                 = My::decode($rs_date->f('meta_id'));
-            static::$memory[$rs->f('post_id')] = $v['date'];
+            $v                                          = My::decode($rs_date->f('meta_id'));
+            static::$memory[(string) $rs->f('post_id')] = (string) $v['date'];
         }
 
         return static::$memory[$rs->f('post_id')];

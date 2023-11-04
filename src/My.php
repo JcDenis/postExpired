@@ -24,7 +24,7 @@ class My extends MyPlugin
      * This is saved into post_meta as meta_id value,
      * so this must be less than 255 caracters.
      *
-     * @param   array   $in     Array of options
+     * @param   array<string, string>   $in     Array of options
      *
      * @return  string  "Serialized" options
      */
@@ -43,14 +43,14 @@ class My extends MyPlugin
      *
      * @param   string  $in     "Serialized" options
      *
-     * @return  array   Array of options
+     * @return  array<string, string>   Array of options
      */
     public static function decode(string $in): array
     {
         $out = [];
         foreach (explode(';', $in) as $v) {
-            $v          = explode('|', $v);
-            $out[$v[0]] = $v[1];
+            $v                   = explode('|', $v);
+            $out[(string) $v[0]] = (string) $v[1];
         }
 
         return $out;

@@ -81,9 +81,9 @@ class BackendBehaviors
     /**
      * Add form to post sidebar.
      *
-     * @param   ArrayObject     $main_items     Main items
-     * @param   ArrayObject     $sidebar_items  Sidebar items
-     * @param   ?MetaRecord     $post           Post record or null
+     * @param   ArrayObject<string, mixed>  $main_items     Main items
+     * @param   ArrayObject<string, mixed>  $sidebar_items  Sidebar items
+     * @param   ?MetaRecord                 $post           Post record or null
      */
     public static function adminPostFormItems(ArrayObject $main_items, ArrayObject $sidebar_items, ?MetaRecord $post): void
     {
@@ -138,8 +138,8 @@ class BackendBehaviors
     /**
      * Posts actions callback to add expired date.
      *
-     * @param   ActionsPosts    $pa     ActionsPosts instance
-     * @param   ArrayObject     $post   _POST actions
+     * @param   ActionsPosts                $pa     ActionsPosts instance
+     * @param   ArrayObject<string, mixed>  $post   _POST actions
      */
     public static function callbackAdd(ActionsPosts $pa, ArrayObject $post): void
     {
@@ -161,8 +161,8 @@ class BackendBehaviors
             )
         ) {
             foreach ($posts_ids as $post_id) {
-                self::delPostExpired($post_id);
-                self::setPostExpired($post_id, $post);
+                self::delPostExpired((int) $post_id);
+                self::setPostExpired((int) $post_id, $post);
             }
 
             Notices::addSuccessNotice(__('Expired date added.'));
@@ -202,8 +202,8 @@ class BackendBehaviors
     /**
      * Posts actions callback to add expired date.
      *
-     * @param   ActionsPosts    $pa     ActionsPosts instance
-     * @param   ArrayObject     $post   _POST actions
+     * @param   ActionsPosts                $pa     ActionsPosts instance
+     * @param   ArrayObject<string, mixed>  $post   _POST actions
      */
     public static function callbackRemove(ActionsPosts $pa, ArrayObject $post): void
     {
@@ -215,7 +215,7 @@ class BackendBehaviors
 
         // Delete expired date
         foreach ($posts_ids as $post_id) {
-            self::delPostExpired($post_id);
+            self::delPostExpired((int) $post_id);
         }
 
         Notices::addSuccessNotice(__('Expired date deleted.'));
@@ -235,8 +235,8 @@ class BackendBehaviors
     /**
      * Save expired date.
      *
-     * @param   int             $post_id    Post id
-     * @param   ArrayObject     $post       _POST fields
+     * @param   int                         $post_id    Post id
+     * @param   ArrayObject<string, mixed>  $post       _POST fields
      */
     private static function setPostExpired(int $post_id, ArrayObject $post): void
     {
@@ -286,7 +286,8 @@ class BackendBehaviors
      * @param   string      $post_type  Posts type
      * @param   null|int    $post_id    Post ID
      * @param   bool        $render     Render fileds to HTML
-     * @return  array   Array of object form fields
+     *
+     * @return  array<string, string|Para>  Array of object form fields
      */
     private static function fieldsPostExpired(string $post_type, ?int $post_id = null, bool $render = true): array
     {
@@ -346,13 +347,15 @@ class BackendBehaviors
             (new Checkbox('post_expired_password', !empty($post_expired['password'])))->value(1),
             (new Label(__('Change password'), Label::OUTSIDE_LABEL_AFTER))->for('post_expired_password')->class('classic'),
             (new Label(__('New password:'), Label::OUTSIDE_LABEL_BEFORE))->for('post_expired_newpassword'),
-            (new Input('post_expired_newpassword'))->size(65)->maxlenght(255)->class('maximal')->value(empty($post_expired['newpassword']) ? '' : $post_expired['newpassword']),
+            (new Input('post_expired_newpassword'))->size(65)->maxlength(255)->class('maximal')->value(empty($post_expired['newpassword']) ? '' : $post_expired['newpassword']),
             (new Note())->text(__('Leave empty to remove it'))->class('form-note'),
         ]);
 
         if ($render) {
             foreach ($fields as $k => $v) {
-                $fields[$k] = $v->render();
+                if (!is_string($v)) {
+                    $fields[$k] = $v->render();
+                }
             }
         }
 
@@ -364,7 +367,7 @@ class BackendBehaviors
      *
      * @param   MetaRecord  $categories     Categories recordset
      *
-     * @return  array   Categorires combo
+     * @return  array<int|string, string|Option>    Categorires combo
      */
     private static function categoriesCombo(MetaRecord $categories): array
     {
@@ -394,7 +397,7 @@ class BackendBehaviors
     /**
      * Custom status combo.
      *
-     * @return  array   Status combo
+     * @return  array<string, string>   Status combo
      */
     private static function statusCombo(): array
     {
@@ -409,7 +412,7 @@ class BackendBehaviors
     /**
      * Custom selection combo.
      *
-     * @return  array   Selection combo
+     * @return  array<string, string>   Selection combo
      */
     private static function selectedCombo(): array
     {
@@ -423,7 +426,7 @@ class BackendBehaviors
     /**
      * Custom comment status combo.
      *
-     * @return  array   Comment status combo
+     * @return  array<string, string>   Comment status combo
      */
     private static function commentCombo(): array
     {
@@ -437,7 +440,7 @@ class BackendBehaviors
     /**
      * Custom trackback status combo.
      *
-     * @return  array   Trackback status combo
+     * @return  array<string, string>   Trackback status combo
      */
     private static function trackbackCombo(): array
     {

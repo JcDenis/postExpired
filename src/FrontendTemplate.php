@@ -20,8 +20,8 @@ class FrontendTemplate
     /**
      * Template condition to check if there is an expired date.
      *
-     * @param   ArrayObject     $attr       Block attributes
-     * @param   string          $content    Block content
+     * @param   ArrayObject<string, mixed>  $attr       Block attributes
+     * @param   string                       $content   Block content
      *
      * @return  string
      */
@@ -47,7 +47,7 @@ class FrontendTemplate
     /**
      * Template for expired date.
      *
-     * @param   ArrayObject     $attr   Value attributes
+     * @param   ArrayObject<string, mixed>  $attr   Value attributes
      *
      * @return  string
      */
@@ -73,7 +73,7 @@ class FrontendTemplate
     /**
      * Template for expired time.
      *
-     * @param   ArrayObject     $attr   Value attributes
+     * @param   ArrayObject<string, mixed>  $attr   Value attributes
      *
      * @return  string
      */
