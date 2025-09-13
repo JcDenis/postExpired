@@ -8,28 +8,22 @@ use ArrayObject;
 use DateTimeZone;
 use Dotclear\App;
 use Dotclear\Core\Backend\Action\ActionsPosts;
-use Dotclear\Core\Backend\{
-    Notices,
-    Page
-};
-use Dotclear\Database\{
-    Cursor,
-    MetaRecord
-};
-use Dotclear\Helper\Html\Form\{
-    Checkbox,
-    Datetime,
-    Form,
-    Hidden,
-    Input,
-    Label,
-    Note,
-    Option,
-    Para,
-    Text,
-    Select,
-    Submit
-};
+use Dotclear\Core\Backend\Notices;
+use Dotclear\Core\Backend\Page;
+use Dotclear\Database\Cursor;
+use Dotclear\Database\MetaRecord;
+use Dotclear\Helper\Html\Form\Checkbox;
+use Dotclear\Helper\Html\Form\Datetime;
+use Dotclear\Helper\Html\Form\Form;
+use Dotclear\Helper\Html\Form\Hidden;
+use Dotclear\Helper\Html\Form\Input;
+use Dotclear\Helper\Html\Form\Label;
+use Dotclear\Helper\Html\Form\Note;
+use Dotclear\Helper\Html\Form\Option;
+use Dotclear\Helper\Html\Form\Para;
+use Dotclear\Helper\Html\Form\Text;
+use Dotclear\Helper\Html\Form\Select;
+use Dotclear\Helper\Html\Form\Submit;
 use Dotclear\Helper\Html\Html;
 use Exception;
 
@@ -131,7 +125,7 @@ class BackendBehaviors
                 || !empty($_POST['post_expired_password'])
             )
         ) {
-            self::setPostExpired($post_id, new ArrayObject($_POST));
+            self::setPostExpired($post_id, new ArrayObject($_POST)); // @phpstan-ignore-line
         }
     }
 
@@ -186,6 +180,7 @@ class BackendBehaviors
             echo
             (new Form('peadd'))->method('post')->action($pa->getURI())->fields([
                 (new Text('', $pa->getCheckboxes())),
+                // @phpstan-ignore-next-line if param 3 is true, [Component] is returned
                 (new Para())->items([
                     ... self::fieldsPostExpired($posts->f('post_type'), null, false),
                     ... $pa->hiddenFields(),
@@ -352,11 +347,7 @@ class BackendBehaviors
         ]);
 
         if ($render) {
-            foreach ($fields as $k => $v) {
-                if (!is_string($v)) {
-                    $fields[$k] = $v->render();
-                }
-            }
+            $fields = array_map(fn ($v): string => $v->render(), $fields);
         }
 
         return $fields;

@@ -7,10 +7,8 @@ namespace Dotclear\Plugin\postExpired;
 use DateTimeZone;
 use Dotclear\App;
 use Dotclear\Database\MetaRecord;
-use Dotclear\Database\Statement\{
-    JoinStatement,
-    SelectStatement
-};
+use Dotclear\Database\Statement\JoinStatement;
+use Dotclear\Database\Statement\SelectStatement;
 
 /**
  * @brief       postExpired frontend behaviors class.
@@ -28,7 +26,7 @@ class FrontendBehaviors
     {
         // Get expired dates and post_id
         $sql   = new SelectStatement();
-        $posts = $sql->from($sql->as(App::con()->prefix() . App::blog()::POST_TABLE_NAME, 'P'))
+        $posts = $sql->from($sql->as(App::db()->con()->prefix() . App::blog()::POST_TABLE_NAME, 'P'))
             ->columns([
                 'P.post_id',
                 'P.post_tz',
@@ -37,7 +35,7 @@ class FrontendBehaviors
             ->join(
                 (new JoinStatement())
                     ->inner()
-                    ->from($sql->as(App::con()->prefix() . App::meta()::META_TABLE_NAME, 'META'))
+                    ->from($sql->as(App::db()->con()->prefix() . App::meta()::META_TABLE_NAME, 'META'))
                     ->on('META.post_id = P.post_id')
                     ->statement()
             )
@@ -125,7 +123,7 @@ class FrontendBehaviors
                 // Update post
                 $post_cur->update(
                     'WHERE post_id = ' . $posts->f('post_id') . ' ' .
-                    "AND blog_id = '" . App::con()->escapeStr(App::blog()->id()) . "' "
+                    "AND blog_id = '" . App::db()->con()->escapeStr(App::blog()->id()) . "' "
                 );
 
                 $updated = true;
