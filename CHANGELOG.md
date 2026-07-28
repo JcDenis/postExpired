@@ -1,3 +1,8 @@
+postExpired xxxx.xx.xx
+===========================================================
+* Bump Dotclear from 2.36 to  2.39
+* Code review (phpstan max)
+
 postExpired 2025.09.13
 ===========================================================
 * Bump Dotclear from 2.28 to  2.36

@@ -28,7 +28,7 @@ class FrontendTemplate
     public static function EntryExpiredIf(ArrayObject $attr, string $content): string
     {
         $if       = [];
-        $operator = isset($attr['operator']) ?
+        $operator = isset($attr['operator']) && is_string($attr['operator']) ?
             App::frontend()->template()->getOperator($attr['operator']) : '&&';
 
         if (isset($attr['has_date'])) {
@@ -53,14 +53,14 @@ class FrontendTemplate
      */
     public static function EntryExpiredDate(ArrayObject $attr): string
     {
-        $format = !empty($attr['format']) ?
+        $format = !empty($attr['format']) && is_string($attr['format']) ?
             addslashes($attr['format']) : '';
         $f = App::frontend()->template()->getFilters($attr);
 
         if (!empty($attr['rfc822'])) {
-            $res = sprintf($f, Date::class . '::rfc822(strtotime(App::frontend()->context()->posts->postExpiredDate()),App::frontend()->context()->posts->post_tz)');
+            $res = sprintf($f, Date::class . '::rfc822(strtotime(App::frontend()->context()->posts->postExpiredDate()),App::frontend()->context()->posts->strField("post_tz"))');
         } elseif (!empty($attr['iso8601'])) {
-            $res = sprintf($f, Date::class . '::iso8601(strtotime(App::frontend()->context()->posts->postExpiredDate(),App::frontend()->context()->posts->post_tz)');
+            $res = sprintf($f, Date::class . '::iso8601(strtotime(App::frontend()->context()->posts->postExpiredDate(),App::frontend()->context()->posts->strField("post_tz"))');
         } elseif ($format) {
             $res = sprintf($f, Date::class . "::dt2str('" . $format . "',App::frontend()->context()->posts->postExpiredDate())");
         } else {
@@ -84,8 +84,8 @@ class FrontendTemplate
             App::frontend()->template()->getFilters($attr),
             Date::class . '::dt2str(' .
             (
-                !empty($attr['format']) ?
-                "'" . addslashes($attr['format']) . "'" : 'App::blog()->settings()->system->time_format'
+                !empty($attr['format']) && is_string($attr['format']) ?
+                "'" . addslashes($attr['format']) . "'" : 'App::blog()->settings()->get("system")->getStr("time_format", false")'
             ) . ',App::frontend()->context()->posts->postExpiredDate())'
         ) . '; } ?>';
     }

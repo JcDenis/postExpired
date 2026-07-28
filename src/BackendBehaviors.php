@@ -88,8 +88,8 @@ class BackendBehaviors
         $sidebar_items['post_expired'] = [
             'title' => __('Expired date'),
             'items' => self::fieldsPostExpired(
-                $post->f('post_type'),
-                (int) $post->f('post_id'),
+                $post->strField('post_type'),
+                $post->intField('post_id'),
                 true
             ),
         ];
@@ -182,7 +182,7 @@ class BackendBehaviors
                 (new Text('', $pa->getCheckboxes())),
                 // @phpstan-ignore-next-line if param 3 is true, [Component] is returned
                 (new Para())->items([
-                    ... self::fieldsPostExpired($posts->f('post_type'), null, false),
+                    ... self::fieldsPostExpired($posts->strField('post_type'), null, false),
                     ... $pa->hiddenFields(),
                     App::nonce()->formNonce(),
                     (new Hidden(['action'], 'post_expired_add')),
@@ -243,28 +243,28 @@ class BackendBehaviors
             'trackback'   => '',
             'password'    => '',
             'newpassword' => '',
-            'date'        => self::dateFromUser($post['post_expired_date']),
+            'date'        => is_string($post['post_expired_date']) ? self::dateFromUser($post['post_expired_date']) : '',
         ];
 
-        if (!empty($post['post_expired_status'])) {
+        if (!empty($post['post_expired_status']) && is_string($post['post_expired_status'])) {
             $post_expired['status'] = (string) $post['post_expired_status'];
         }
-        if (!empty($post['post_expired_category'])) {
+        if (!empty($post['post_expired_category']) && is_string($post['post_expired_category'])) {
             $post_expired['category'] = (string) $post['post_expired_category'];
         }
-        if (!empty($post['post_expired_selected'])) {
+        if (!empty($post['post_expired_selected']) && is_string($post['post_expired_selected'])) {
             $post_expired['selected'] = (string) $post['post_expired_selected'];
         }
-        if (!empty($post['post_expired_comment'])) {
+        if (!empty($post['post_expired_comment']) && is_string($post['post_expired_comment'])) {
             $post_expired['comment'] = (string) $post['post_expired_comment'];
         }
-        if (!empty($post['post_expired_trackback'])) {
+        if (!empty($post['post_expired_trackback']) && is_string($post['post_expired_trackback'])) {
             $post_expired['trackback'] = (string) $post['post_expired_trackback'];
         }
-        if (!empty($post['post_expired_password'])) {
+        if (!empty($post['post_expired_password']) && is_string($post['post_expired_password'])) {
             $post_expired['password'] = (string) $post['post_expired_password'];
         }
-        if (!empty($post['post_expired_newpassword'])) {
+        if (!empty($post['post_expired_newpassword']) && is_string($post['post_expired_newpassword'])) {
             $post_expired['newpassword'] = (string) $post['post_expired_newpassword'];
         }
 
@@ -296,7 +296,7 @@ class BackendBehaviors
             ]);
 
             if (!$rs->isEmpty()) {
-                $post_expired = My::decode($rs->f('meta_id'));
+                $post_expired = My::decode($rs->strField('meta_id'));
             }
         }
 
@@ -374,8 +374,8 @@ class BackendBehaviors
             );
             while ($categories->fetch()) {
                 $categories_combo[] = new Option(
-                    str_repeat('&nbsp;&nbsp;', ((int) $categories->f('level')) - 1) . '&bull; ' . Html::escapeHTML($categories->f('cat_title')),
-                    '!' . $categories->f('cat_id')
+                    str_repeat('&nbsp;&nbsp;', $categories->intField('level') - 1) . '&bull; ' . Html::escapeHTML($categories->strField('cat_title')),
+                    '!' . $categories->strField('cat_id')
                 );
             }
         } catch (Exception $e) {
@@ -451,7 +451,7 @@ class BackendBehaviors
      */
     private static function dateFromUser(string $date): string
     {
-        $u = App::auth()->getInfo('user_tz') ?? 'UTC';
+        $u = is_string(App::auth()->getInfo('user_tz')) ? App::auth()->getInfo('user_tz') : 'UTC';
         $d = date_create($date, new DateTimeZone($u));
 
         return $d ? date_format($d->setTimezone(new DateTimeZone('UTC')), 'Y-m-d H:i:00') : '';
@@ -466,7 +466,7 @@ class BackendBehaviors
      */
     private static function dateToUser(string $date): string
     {
-        $u = App::auth()->getInfo('user_tz') ?? 'UTC';
+        $u = is_string(App::auth()->getInfo('user_tz')) ? App::auth()->getInfo('user_tz') : 'UTC';
         $d = date_create($date, new DateTimeZone('UTC'));
 
         return $d ? date_format($d->setTimezone(new DateTimeZone($u)), 'Y-m-d\TH:i') : '';

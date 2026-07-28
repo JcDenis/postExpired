@@ -34,7 +34,7 @@ class Frontend
         __('This entry has no expiration date');
 
         # launch update only on public home page and feed
-        if (in_array(App::url()->type, ['default', 'feed'])) {
+        if (App::url()->isType(['default', 'feed'])) {
             App::behavior()->addBehavior(
                 'publicBeforeDocumentV2',
                 FrontendBehaviors::publicBeforeDocumentV2(...)

@@ -59,7 +59,7 @@ class FrontendBehaviors
         $updated = false;
         while ($posts->fetch()) {
             // Decode meta record
-            $post_expired = My::decode($posts->f('meta_id'));
+            $post_expired = My::decode($posts->strField('meta_id'));
 
             // Check if post is outdated
             $meta_dt = date_create((string) $post_expired['date'], $utc);
@@ -122,7 +122,7 @@ class FrontendBehaviors
 
                 // Update post
                 $post_cur->update(
-                    'WHERE post_id = ' . $posts->f('post_id') . ' ' .
+                    'WHERE post_id = ' . $posts->strField('post_id') . ' ' .
                     "AND blog_id = '" . App::db()->con()->escapeStr(App::blog()->id()) . "' "
                 );
 

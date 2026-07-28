@@ -33,10 +33,10 @@ class rsExtPostExpired extends Post
      */
     public static function postExpiredDate(MetaRecord $rs): string
     {
-        if (!static::$memory[$rs->f('post_id')]) {
+        if (!static::$memory[$rs->strField('post_id')]) {
             $rs_date = App::meta()->getMetadata([
                 'meta_type' => My::META_TYPE,
-                'post_id'   => $rs->f('post_id'),
+                'post_id'   => $rs->intField('post_id'),
                 'limit'     => 1,
             ]);
 
@@ -44,10 +44,10 @@ class rsExtPostExpired extends Post
                 return '';
             }
 
-            $v                                          = My::decode($rs_date->f('meta_id'));
-            static::$memory[(string) $rs->f('post_id')] = (string) $v['date'];
+            $v                                          = My::decode($rs_date->strField('meta_id'));
+            static::$memory[$rs->strField('post_id')] = (string) $v['date'];
         }
 
-        return static::$memory[$rs->f('post_id')];
+        return static::$memory[$rs->strField('post_id')];
     }
 }
