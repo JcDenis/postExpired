@@ -22,7 +22,7 @@ $this->registerModule(
     'Expired entries',
     'Change entries options at a given date',
     'Jean-Christian Denis and Contributors',
-    '2025.09.13',
+    '2026.08.12',
     [
         'requires'    => [['core', '2.39']],
         'permissions' => 'My',
