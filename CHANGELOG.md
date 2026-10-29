@@ -1,3 +1,8 @@
+postExpired 2026.10.29
+===========================================================
+* Fix expired category selection (Dotclear 2.39.1 categories IDs)
+* Fix posts IDs handling
+
 postExpired 2026.08.12
 ===========================================================
 * Bump Dotclear from 2.36 to  2.39
