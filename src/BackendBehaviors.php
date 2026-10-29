@@ -375,7 +375,7 @@ class BackendBehaviors
             while ($categories->fetch()) {
                 $categories_combo[] = new Option(
                     str_repeat('&nbsp;&nbsp;', $categories->intField('level') - 1) . '&bull; ' . Html::escapeHTML($categories->strField('cat_title')),
-                    '!' . $categories->strField('cat_id')
+                    '!' . $categories->intField('cat_id')
                 );
             }
         } catch (Exception $e) {
