@@ -20,7 +20,7 @@ class rsExtPostExpired extends Post
     /**
      * Memory to prevent redondant call.
      *
-     * @var     array<string, string>   $memory
+     * @var     array<int, string>      $memory
      */
     protected static array $memory = [];
 
@@ -33,7 +33,8 @@ class rsExtPostExpired extends Post
      */
     public static function postExpiredDate(MetaRecord $rs): string
     {
-        if (!static::$memory[$rs->strField('post_id')]) {
+        $post_id = $rs->intField('post_id');
+        if (empty(static::$memory[$post_id])) {
             $rs_date = App::meta()->getMetadata([
                 'meta_type' => My::META_TYPE,
                 'post_id'   => $rs->intField('post_id'),
@@ -44,10 +45,10 @@ class rsExtPostExpired extends Post
                 return '';
             }
 
-            $v                                          = My::decode($rs_date->strField('meta_id'));
-            static::$memory[$rs->strField('post_id')] = (string) $v['date'];
+            $v                       = My::decode($rs_date->strField('meta_id'));
+            static::$memory[$post_id] = (string) $v['date'];
         }
 
-        return static::$memory[$rs->strField('post_id')];
+        return static::$memory[$post_id];
     }
 }

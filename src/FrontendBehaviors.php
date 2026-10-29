@@ -122,7 +122,7 @@ class FrontendBehaviors
 
                 // Update post
                 $post_cur->update(
-                    'WHERE post_id = ' . $posts->strField('post_id') . ' ' .
+                    'WHERE post_id = ' . $posts->intField('post_id') . ' ' .
                     "AND blog_id = '" . App::db()->con()->escapeStr(App::blog()->id()) . "' "
                 );
 
