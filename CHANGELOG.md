@@ -1,3 +1,9 @@
+postExpired 2026.11.15
+===========================================================
+* [fix] Expired dates checked on every page, notices for incomplete settings, form on new entries, template tags
+* [lang] French typos and new messages
+* [docs] Add a user guide in French, with screenshots
+
 postExpired 2026.10.29
 ===========================================================
 * Fix expired category selection (Dotclear 2.39.1 categories IDs)
