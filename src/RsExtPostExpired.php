@@ -6,7 +6,6 @@ namespace Dotclear\Plugin\postExpired;
 
 use Dotclear\App;
 use Dotclear\Database\MetaRecord;
-use Dotclear\Schema\Extension\Post;
 
 /**
  * @brief       postExpired record extension class.
@@ -15,7 +14,7 @@ use Dotclear\Schema\Extension\Post;
  * @author      Jean-Christian Denis
  * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-class rsExtPostExpired extends Post
+class RsExtPostExpired
 {
     /**
      * Memory to prevent redondant call.

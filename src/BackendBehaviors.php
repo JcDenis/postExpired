@@ -81,15 +81,30 @@ class BackendBehaviors
      */
     public static function adminPostFormItems(ArrayObject $main_items, ArrayObject $sidebar_items, ?MetaRecord $post): void
     {
-        if ($post === null) {
-            return;
-        }
-
         $sidebar_items['post_expired'] = [
             'title' => __('Expired date'),
             'items' => self::fieldsPostExpired(
-                $post->strField('post_type'),
-                $post->intField('post_id'),
+                $post === null ? 'post' : $post->strField('post_type'),
+                $post === null ? null : $post->intField('post_id'),
+                true
+            ),
+        ];
+    }
+
+    /**
+     * Add form to page sidebar.
+     *
+     * @param   ArrayObject<string, mixed>  $main_items     Main items
+     * @param   ArrayObject<string, mixed>  $sidebar_items  Sidebar items
+     * @param   ?MetaRecord                 $post           Post record or null
+     */
+    public static function adminPageFormItems(ArrayObject $main_items, ArrayObject $sidebar_items, ?MetaRecord $post): void
+    {
+        $sidebar_items['post_expired'] = [
+            'title' => __('Expired date'),
+            'items' => self::fieldsPostExpired(
+                'page',
+                $post === null ? null : $post->intField('post_id'),
                 true
             ),
         ];
@@ -115,17 +130,16 @@ class BackendBehaviors
     {
         self::delPostExpired($post_id);
 
-        if (!empty($_POST['post_expired_date'])
-            && (
-                !empty($_POST['post_expired_status'])
-                || !empty($_POST['post_expired_category'])
-                || !empty($_POST['post_expired_selected'])
-                || !empty($_POST['post_expired_comment'])
-                || !empty($_POST['post_expired_trackback'])
-                || !empty($_POST['post_expired_password'])
-            )
-        ) {
-            self::setPostExpired($post_id, new ArrayObject($_POST)); // @phpstan-ignore-line
+        $post = new ArrayObject($_POST);
+        $date = !empty($post['post_expired_date']);
+        $todo = self::hasChange($post); // @phpstan-ignore-line
+
+        if ($date && $todo) {
+            self::setPostExpired($post_id, $post); // @phpstan-ignore-line
+        } elseif ($date) {
+            Notices::addWarningNotice(__('Expired date not saved: choose at least one change to do on this date.'));
+        } elseif ($todo) {
+            Notices::addWarningNotice(__('Expired date not saved: choose a date.'));
         }
     }
 
@@ -144,16 +158,7 @@ class BackendBehaviors
         }
 
         // Add expired date
-        if (!empty($post['post_expired_date'])
-            && (
-                !empty($post['post_expired_status'])
-                || !empty($post['post_expired_category'])
-                || !empty($post['post_expired_selected'])
-                || !empty($post['post_expired_comment'])
-                || !empty($post['post_expired_trackback'])
-                || !empty($post['post_expired_password'])
-            )
-        ) {
+        if (!empty($post['post_expired_date']) && self::hasChange($post)) {
             foreach ($posts_ids as $post_id) {
                 self::delPostExpired((int) $post_id);
                 self::setPostExpired((int) $post_id, $post);
@@ -164,6 +169,13 @@ class BackendBehaviors
 
             // Display form
         } else {
+            // Form submitted without date or change
+            if (isset($post['post_expired_date'])) {
+                App::error()->add(empty($post['post_expired_date']) ?
+                    __('Expired date not saved: choose a date.') :
+                    __('Expired date not saved: choose at least one change to do on this date.'));
+            }
+
             // Get records to know post type
             $posts = $pa->getRS();
 
@@ -215,6 +227,22 @@ class BackendBehaviors
 
         Notices::addSuccessNotice(__('Expired date deleted.'));
         $pa->redirect(true);
+    }
+
+    /**
+     * Check if at least one change is asked.
+     *
+     * @param   ArrayObject<string, mixed>  $post   _POST fields
+     */
+    private static function hasChange(ArrayObject $post): bool
+    {
+        foreach (['status', 'category', 'selected', 'comment', 'trackback', 'password'] as $k) {
+            if (!empty($post['post_expired_' . $k])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -302,7 +330,7 @@ class BackendBehaviors
 
         $fields['post_expired_date'] = (new Para())->items([
             (new Label(__('Date:'), Label::OUTSIDE_LABEL_BEFORE))->for('post_expired_date'),
-            (new Datetime('post_expired_date', Html::escapeHTML(self::dateToUser($post_expired['date'] ?? 'now'))))->class(empty($post_expired['date']) ? 'invalid' : ''),
+            (new Datetime('post_expired_date', empty($post_expired['date']) ? '' : Html::escapeHTML(self::dateToUser($post_expired['date'])))),
         ]);
 
         $fields['post_expired_status'] = (new Para())->items([

@@ -33,9 +33,9 @@ class FrontendTemplate
 
         if (isset($attr['has_date'])) {
             $sign = (bool) $attr['has_date'] ? '!' : '=';
-            $if[] = '(null ' . $sign . '== App::frontend()->context()->posts->postExpiredDate())';
+            $if[] = '(\'\' ' . $sign . '== App::frontend()->context()->posts->postExpiredDate())';
         } else {
-            $if[] = '(null !== App::frontend()->context()->posts->postExpiredDate())';
+            $if[] = '(\'\' !== App::frontend()->context()->posts->postExpiredDate())';
         }
 
         return
@@ -58,16 +58,16 @@ class FrontendTemplate
         $f = App::frontend()->template()->getFilters($attr);
 
         if (!empty($attr['rfc822'])) {
-            $res = sprintf($f, Date::class . '::rfc822(strtotime(App::frontend()->context()->posts->postExpiredDate()),App::frontend()->context()->posts->strField("post_tz"))');
+            $res = sprintf($f, Date::class . '::rfc822((int) strtotime(App::frontend()->context()->posts->postExpiredDate()) + ' . Date::class . '::getTimeOffset(App::frontend()->context()->posts->strField("post_tz")),App::frontend()->context()->posts->strField("post_tz"))');
         } elseif (!empty($attr['iso8601'])) {
-            $res = sprintf($f, Date::class . '::iso8601(strtotime(App::frontend()->context()->posts->postExpiredDate(),App::frontend()->context()->posts->strField("post_tz"))');
+            $res = sprintf($f, Date::class . '::iso8601((int) strtotime(App::frontend()->context()->posts->postExpiredDate()) + ' . Date::class . '::getTimeOffset(App::frontend()->context()->posts->strField("post_tz")),App::frontend()->context()->posts->strField("post_tz"))');
         } elseif ($format) {
-            $res = sprintf($f, Date::class . "::dt2str('" . $format . "',App::frontend()->context()->posts->postExpiredDate())");
+            $res = sprintf($f, Date::class . "::dt2str('" . $format . "',App::frontend()->context()->posts->postExpiredDate(),App::frontend()->context()->posts->strField(\"post_tz\"))");
         } else {
-            $res = sprintf($f, Date::class . '::dt2str(App::blog()->settings()->system->date_format,App::frontend()->context()->posts->postExpiredDate())');
+            $res = sprintf($f, Date::class . '::dt2str(App::blog()->settings()->get("system")->getStr("date_format", false),App::frontend()->context()->posts->postExpiredDate(),App::frontend()->context()->posts->strField("post_tz"))');
         }
 
-        return '<?php if (null !== App::frontend()->context()->posts->postExpiredDate()) { echo ' . $res . '; } ?>';
+        return '<?php if (\'\' !== App::frontend()->context()->posts->postExpiredDate()) { echo ' . $res . '; } ?>';
     }
 
     /**
@@ -80,13 +80,13 @@ class FrontendTemplate
     public static function EntryExpiredTime(ArrayObject $attr): string
     {
         return
-        '<?php if (null !== App::frontend()->context()->posts->postExpiredDate()) { echo ' . sprintf(
+        '<?php if (\'\' !== App::frontend()->context()->posts->postExpiredDate()) { echo ' . sprintf(
             App::frontend()->template()->getFilters($attr),
             Date::class . '::dt2str(' .
             (
                 !empty($attr['format']) && is_string($attr['format']) ?
-                "'" . addslashes($attr['format']) . "'" : 'App::blog()->settings()->get("system")->getStr("time_format", false")'
-            ) . ',App::frontend()->context()->posts->postExpiredDate())'
+                "'" . addslashes($attr['format']) . "'" : 'App::blog()->settings()->get("system")->getStr("time_format", false)'
+            ) . ',App::frontend()->context()->posts->postExpiredDate(),App::frontend()->context()->posts->strField("post_tz"))'
         ) . '; } ?>';
     }
 }

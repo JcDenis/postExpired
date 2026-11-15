@@ -29,13 +29,16 @@ class Backend
             return false;
         }
 
+        // Apply expired dates
+        PostExpired::check();
+
         App::behavior()->addBehaviors([
             'adminPostsActions'     => BackendBehaviors::adminPostsActions(...),
             'adminPagesActions'     => BackendBehaviors::adminPostsActions(...),
             'adminPostHeaders'      => BackendBehaviors::adminPostHeaders(...),
             'adminPageHeaders'      => BackendBehaviors::adminPostHeaders(...),
             'adminPostFormItems'    => BackendBehaviors::adminPostFormItems(...),
-            'adminPageFormItems'    => BackendBehaviors::adminPostFormItems(...),
+            'adminPageFormItems'    => BackendBehaviors::adminPageFormItems(...),
             'adminBeforePostDelete' => BackendBehaviors::adminBeforePostDelete(...),
             'adminBeforePageDelete' => BackendBehaviors::adminBeforePostDelete(...),
             'adminAfterPostUpdate'  => BackendBehaviors::adminAfterPostSave(...),

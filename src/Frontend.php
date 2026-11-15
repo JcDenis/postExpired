@@ -33,13 +33,11 @@ class Frontend
         __('Expired on');
         __('This entry has no expiration date');
 
-        # launch update only on public home page and feed
-        if (App::url()->isType(['default', 'feed'])) {
-            App::behavior()->addBehavior(
-                'publicBeforeDocumentV2',
-                FrontendBehaviors::publicBeforeDocumentV2(...)
-            );
-        }
+        // Apply expired dates before any public page is served
+        App::behavior()->addBehavior(
+            'publicPrependV2',
+            PostExpired::check(...)
+        );
         App::behavior()->addBehavior(
             'coreBlogGetPosts',
             FrontendBehaviors::coreBlogGetPosts(...)
