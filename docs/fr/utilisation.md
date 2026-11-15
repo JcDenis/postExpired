@@ -12,7 +12,7 @@ postExpired permet de programmer, pour un billet ou une page, des changements à
 
 ## Programmer un changement sur un billet
 
-Ouvrez un billet existant (ou une page). Dans la colonne de droite, une rubrique **Date de péremption** est repliée : cliquez dessus pour la déplier.
+Ouvrez un billet (ou une page), existant ou nouveau. Dans la colonne de droite, une rubrique **Date de péremption** est repliée : cliquez dessus pour la déplier.
 
 ![Rubrique vide](img/billet-menu-vide.png)
 
@@ -23,16 +23,18 @@ Remplissez :
   * **État** : publié, en attente ou non publié.
   * **Catégorie** : une catégorie, ou « Sans catégorie » (billets seulement).
   * **Sélection** : sélectionné ou non (billets seulement).
-  * **Status des commentaires** et **des rétroliens** : ouverts ou fermés.
+  * **Statut des commentaires** et **des rétroliens** : ouverts ou fermés.
   * **Modifier le mot de passe** : cochez la case et saisissez le nouveau mot de passe. Laissé vide, le mot de passe du billet est supprimé.
 
 ![Rubrique remplie](img/billet-menu-rempli.png)
 
 Enregistrez le billet. La date et les changements sont mémorisés avec le billet : rouvrez-le pour les retrouver.
 
+Si la date est remplie sans aucun changement, ou si un changement est choisi sans date, rien n'est mémorisé et un message vous le signale.
+
 ## Programmer sur plusieurs billets
 
-Dans la liste des billets (ou des pages), cochez les billets, choisissez l'action **Ajouter une date de péremption** et validez. Une page vous demande la date et les changements, comme ci-dessus.
+Dans la liste des billets (ou des pages), cochez les billets, choisissez l'action **Ajouter une date de péremption** et validez. Une page vous demande la date et les changements, comme ci-dessus. Si la date ou les changements manquent, un message vous le signale et la page reste affichée.
 
 ![Action groupée](img/action-groupee.png)
 
@@ -40,19 +42,16 @@ Les billets choisis reçoivent tous la même date et les mêmes changements.
 
 ## Retirer une date de péremption
 
-* Sur un billet : videz la date, puis enregistrez. Ou laissez tous les changements sur « Inchangé » et enregistrez.
+* Sur un billet : videz la date, remettez tous les changements sur « Inchangé », puis enregistrez.
 * Sur plusieurs billets : cochez-les et choisissez l'action **Retirer une date de péremption**.
 
 ## Quand le changement a-t-il lieu ?
 
-Le plugin ne tourne pas en tâche de fond : la date est vérifiée quand un visiteur ouvre la **page d'accueil** ou un **flux** du blog. Une fois la date dépassée, les changements sont appliqués et la date de péremption est supprimée du billet.
+Le plugin ne tourne pas en tâche de fond : la date est vérifiée à chaque ouverture d'une page du blog, côté public (par un visiteur) comme côté administration. Une fois la date dépassée, les changements sont appliqués et la date de péremption est supprimée du billet.
 
 Un billet n'a qu'une seule date de péremption.
 
 ## Bon à savoir
 
-* La date n'est enregistrée que si au moins un changement est choisi. Si vous remplissez la date seule, rien n'est mémorisé et aucun message ne vous prévient.
-* Tant que personne n'ouvre la page d'accueil ou un flux, le changement n'a pas lieu, même si la date est passée.
-* La rubrique n'apparaît pas dans le formulaire de création d'un nouveau billet : enregistrez d'abord le billet.
-* Le plugin fournit aussi des balises pour les thèmes (`EntryExpiredIf`, `EntryExpiredDate`, `EntryExpiredTime`) afin d'afficher la date de péremption sur le blog.
-* Plusieurs textes de l'interface en français contiennent des fautes : « péremtion », « Séléction », « Status des commentaires », « Dtae de péremtion supprimé ».
+* Tant que personne n'ouvre une page du blog ou de l'administration, le changement n'a pas lieu, même si la date est passée.
+* Le plugin fournit aussi des balises pour les thèmes (`EntryExpiredIf`, `EntryExpiredDate`, `EntryExpiredTime`) afin d'afficher la date de péremption sur le blog. Les dates sont affichées dans le fuseau horaire du billet.
