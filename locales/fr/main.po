@@ -26,22 +26,22 @@ msgid "Expired date added."
 msgstr "Date de péremption ajoutée."
 
 msgid "Add expired date to this selection"
-msgstr "Ajouter une date de péremtion à cette sélection"
+msgstr "Ajouter une date de péremption à cette sélection"
 
 msgid "Expired date deleted."
-msgstr "Dtae de péremtion supprimé"
+msgstr "Date de péremption supprimée."
 
 msgid "On this date, change:"
-msgstr "Á cette date, changer :"
+msgstr "À cette date, changer :"
 
 msgid "Selection:"
-msgstr "Séléction :"
+msgstr "Sélection :"
 
 msgid "Comments status:"
-msgstr "Status des commentaires :"
+msgstr "Statut des commentaires :"
 
 msgid "Trackbacks status:"
-msgstr "Status des rétroliens :"
+msgstr "Statut des rétroliens :"
 
 msgid "Change password"
 msgstr "Modifier le mot de passe"
@@ -58,3 +58,9 @@ msgstr "Expire le"
 msgid "This entry has no expiration date"
 msgstr "Ce billet n'a pas de date de péremption"
 
+
+msgid "Expired date not saved: choose at least one change to do on this date."
+msgstr "Date de péremption non enregistrée : choisissez au moins une modification à faire à cette date."
+
+msgid "Expired date not saved: choose a date."
+msgstr "Date de péremption non enregistrée : choisissez une date."
