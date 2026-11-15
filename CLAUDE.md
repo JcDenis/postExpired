@@ -23,13 +23,15 @@ Required Dotclear and PHP versions: see `_define.php`.
 * `src/FrontendBehaviors.php`: public behaviors.
 * `src/FrontendTemplate.php`: template tags.
 * `src/My.php`: module helpers (`My::id()`, settings, permissions).
-* `src/RsExtPostExpired.php`: record extension class.
+* `src/PostExpired.php`: applies the changes of expired dates (public pages and admin pages).
+* `src/RsExtPostExpired.php`: record extension class (must not extend the core Post extension).
 * `js/`: `backend.js`.
-* Behaviors used: `publicBeforeDocumentV2`, `coreBlogGetPosts`, `adminPostsActions`, `adminPagesActions`, `adminPostHeaders`, `adminPageHeaders`, `adminPostFormItems`, `adminPageFormItems`, `adminBeforePostDelete`, `adminBeforePageDelete`, `adminAfterPostUpdate`, `adminAfterPageUpdate`, `adminAfterPostCreate`, `adminAfterPageCreate`.
+* Behaviors used: `publicPrependV2`, `coreBlogGetPosts`, `adminPostsActions`, `adminPagesActions`, `adminPostHeaders`, `adminPageHeaders`, `adminPostFormItems`, `adminPageFormItems`, `adminBeforePostDelete`, `adminBeforePageDelete`, `adminAfterPostUpdate`, `adminAfterPageUpdate`, `adminAfterPostCreate`, `adminAfterPageCreate`.
 
 ## Pitfalls
 
-* None recorded yet: add here the traps met while working on the module.
+* The record extension must not extend `Dotclear\Schema\Extension\Post`: its inherited methods would replace those of other extensions (FrontendSession `commentsActive()`).
+* A password removed by an expired date must be set to `null`, not `''`, or the core hides the entry.
 
 ## Testing
 
