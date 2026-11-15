@@ -12,6 +12,8 @@ _postExpired_ is a plugin for the open-source web publishing software called [Do
 
 > Add options to the sidebar of post edition page to change some options of a post at a given time.
 
+A [user guide in French](https://github.com/JcDenis/postExpired/blob/master/docs/fr/utilisation.md) is available.
+
 ## REQUIREMENTS
 
 * Dotclear 2.39
@@ -35,6 +37,7 @@ Notes:
 
 ## LINKS
 
+* [User guide (in French)](https://github.com/JcDenis/postExpired/blob/master/docs/fr/utilisation.md)
 * [License](https://github.com/JcDenis/postExpired/blob/master/LICENSE)
 * [Packages & details](https://github.com/JcDenis/postExpired/releases) (or on [Repository](https://dotclear.org/plugin/detail/postExpired))
 * [Sources & contributions](https://github.com/JcDenis/postExpired)
