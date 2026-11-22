@@ -1,3 +1,8 @@
+postExpired 2026.11.23
+===========================================================
+* [new] Expired date for an AI assistant connected with ClaudetteMcp (set_post_expiration)
+* [new] Family of the ClaudetteMcp tools, for the keys limited to some families
+
 postExpired 2026.11.22
 ===========================================================
 * [compat] Use dotclear.toggleWithLegend() instead of deprecated jQuery plugin
