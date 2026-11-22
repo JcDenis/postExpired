@@ -1,3 +1,7 @@
+postExpired 2026.11.22
+===========================================================
+* [compat] Use dotclear.toggleWithLegend() instead of deprecated jQuery plugin
+
 postExpired 2026.11.15
 ===========================================================
 * [fix] Expired dates checked on every page, notices for incomplete settings, form on new entries, template tags
