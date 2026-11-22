@@ -33,7 +33,7 @@ posts actions page. This plugins also supports standard "pages".
 
 With the plugin [ClaudetteMcp](https://github.com/JcDenis/ClaudetteMcp), an AI assistant connected to the blog
 can set or remove the expired date of an entry, with the tool `set_post_expiration`
-(all the changes of the admin form, except the password). ClaudetteMcp is not required by _postExpired_.
+(all the changes of the admin form, except the password). ClaudetteMcp is optional for _postExpired_ (version 0.5 or later).
 
 Notes:
 * Only one expired date per post is supported

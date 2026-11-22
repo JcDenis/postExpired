@@ -22,7 +22,7 @@ Required Dotclear and PHP versions: see `_define.php`.
 * `src/Frontend.php`: public side: behaviors, template tags and URL handlers registration.
 * `src/FrontendBehaviors.php`: public behaviors.
 * `src/FrontendTemplate.php`: template tags.
-* `src/ClaudetteMcp/SetPostExpiration.php`: tool `set_post_expiration` for the plugin ClaudetteMcp (never required),
+* `src/ClaudetteMcp/SetPostExpiration.php`: tool `set_post_expiration` for the plugin ClaudetteMcp (optional dependency `ClaudetteMcp?` in `requires`),
   registered in `src/Frontend.php` with the behavior `ClaudetteMcpAddTool`. No password change through the assistant.
 * `src/My.php`: module helpers (`My::id()`, settings, permissions).
 * `src/PostExpired.php`: applies the changes of expired dates (public pages and admin pages).
