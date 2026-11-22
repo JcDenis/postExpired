@@ -31,6 +31,10 @@ to edit date and options to change.
 You can also add or remove expired date to multiple post from 
 posts actions page. This plugins also supports standard "pages".
 
+With the plugin [ClaudetteMcp](https://github.com/JcDenis/ClaudetteMcp), an AI assistant connected to the blog
+can set or remove the expired date of an entry, with the tool `set_post_expiration`
+(all the changes of the admin form, except the password). ClaudetteMcp is not required by _postExpired_.
+
 Notes:
 * Only one expired date per post is supported
 * Expired dates are checked from public home page and feed page

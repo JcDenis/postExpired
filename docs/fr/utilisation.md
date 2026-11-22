@@ -8,7 +8,8 @@ postExpired permet de programmer, pour un billet ou une page, des changements à
 2. [Programmer sur plusieurs billets](#programmer-sur-plusieurs-billets)
 3. [Retirer une date de péremption](#retirer-une-date-de-péremption)
 4. [Quand le changement a-t-il lieu ?](#quand-le-changement-a-t-il-lieu-)
-5. [Bon à savoir](#bon-à-savoir)
+5. [Avec un assistant IA](#avec-un-assistant-ia)
+6. [Bon à savoir](#bon-à-savoir)
 
 ## Programmer un changement sur un billet
 
@@ -50,6 +51,16 @@ Les billets choisis reçoivent tous la même date et les mêmes changements.
 Le plugin ne tourne pas en tâche de fond : la date est vérifiée à chaque ouverture d'une page du blog, côté public (par un visiteur) comme côté administration. Une fois la date dépassée, les changements sont appliqués et la date de péremption est supprimée du billet.
 
 Un billet n'a qu'une seule date de péremption.
+
+## Avec un assistant IA
+
+Avec le plugin [ClaudetteMcp](https://github.com/JcDenis/ClaudetteMcp), un assistant IA connecté au blog peut programmer
+ou retirer la date de péremption d'un billet ou d'une page, avec l'outil `set_post_expiration`.
+
+Il dispose des mêmes changements que le formulaire du billet (état, catégorie, sélection, commentaires, rétroliens),
+sauf le mot de passe : un mot de passe ne passe jamais par l'assistant. La date doit être dans le futur, dans votre fuseau horaire.
+Comme dans l'administration, seul l'auteur du billet ou un administrateur de contenu peut le faire.
+_ClaudetteMcp_ n'est pas nécessaire au fonctionnement de _postExpired_.
 
 ## Bon à savoir
 

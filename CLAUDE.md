@@ -22,11 +22,13 @@ Required Dotclear and PHP versions: see `_define.php`.
 * `src/Frontend.php`: public side: behaviors, template tags and URL handlers registration.
 * `src/FrontendBehaviors.php`: public behaviors.
 * `src/FrontendTemplate.php`: template tags.
+* `src/ClaudetteMcp/SetPostExpiration.php`: tool `set_post_expiration` for the plugin ClaudetteMcp (never required),
+  registered in `src/Frontend.php` with the behavior `ClaudetteMcpAddTool`. No password change through the assistant.
 * `src/My.php`: module helpers (`My::id()`, settings, permissions).
 * `src/PostExpired.php`: applies the changes of expired dates (public pages and admin pages).
 * `src/RsExtPostExpired.php`: record extension class (must not extend the core Post extension).
 * `js/`: `backend.js`.
-* Behaviors used: `publicPrependV2`, `coreBlogGetPosts`, `adminPostsActions`, `adminPagesActions`, `adminPostHeaders`, `adminPageHeaders`, `adminPostFormItems`, `adminPageFormItems`, `adminBeforePostDelete`, `adminBeforePageDelete`, `adminAfterPostUpdate`, `adminAfterPageUpdate`, `adminAfterPostCreate`, `adminAfterPageCreate`.
+* Behaviors used: `ClaudetteMcpAddTool`, `publicPrependV2`, `coreBlogGetPosts`, `adminPostsActions`, `adminPagesActions`, `adminPostHeaders`, `adminPageHeaders`, `adminPostFormItems`, `adminPageFormItems`, `adminBeforePostDelete`, `adminBeforePageDelete`, `adminAfterPostUpdate`, `adminAfterPageUpdate`, `adminAfterPostCreate`, `adminAfterPageCreate`.
 
 ## Pitfalls
 
