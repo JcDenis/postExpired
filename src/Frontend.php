@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\postExpired;
 
+use ArrayObject;
 use Dotclear\App;
 use Dotclear\Helper\Process\TraitProcess;
 
@@ -32,6 +33,11 @@ class Frontend
         // l10n
         __('Expired on');
         __('This entry has no expiration date');
+
+        // Tool for AI assistants connected to the blog with the plugin ClaudetteMcp (never required)
+        App::behavior()->addBehavior('ClaudetteMcpAddTool', function (ArrayObject $tools): void {
+            $tools->append(new ClaudetteMcp\SetPostExpiration());
+        });
 
         // Apply expired dates before any public page is served
         App::behavior()->addBehavior(
