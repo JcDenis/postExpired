@@ -36,6 +36,14 @@ class SetPostExpiration extends PostTool
         'unpublished' => 0,
     ];
 
+    /**
+     * Family of tools for the keys of ClaudetteMcp (string, not constant: older ClaudetteMcp versions have none).
+     */
+    public function family(): string
+    {
+        return 'posts';
+    }
+
     public function name(): string
     {
         return 'set_post_expiration';
