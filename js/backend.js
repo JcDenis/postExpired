@@ -10,8 +10,11 @@ $(() => {
 		post_pe_dtPick.draw();
 	}
   }
-  $('#post_expired h4').toggleWithLegend(
-  	$('#post_expired').children().not('h4'),
-	{user_pref:'dcx_postexpired_admin_form_sidebar',legend_click:true}
-  );
+  const title = document.querySelector('#post_expired h4');
+  if (title) {
+    dotclear.toggleWithLegend(title, document.querySelectorAll('#post_expired > :not(h4)'), {
+      user_pref: 'dcx_postexpired_admin_form_sidebar',
+      legend_click: true,
+    });
+  }
 });
